@@ -6,9 +6,13 @@ interface Props {
 	select: (id: string) => void
 }
 
+const hasPoster = (url: string) => url.toLowerCase() !== 'n/a'
+
 export default function SearchResults({ results, select }: Props) {
 	if (!results.length) {
-		return <div>no results :(</div>
+		return (
+			<div className="search-results search-results__empty">no results found</div>
+		)
 	}
 	return (
 		<ul className="search-results">
@@ -18,7 +22,12 @@ export default function SearchResults({ results, select }: Props) {
 					key={r.imdbID}
 					onClick={() => select(r.imdbID)}
 				>
-					{r.Title} ({r.Year})
+					<div className="search-result__poster">
+						{hasPoster(r.Poster) ? <img src={r.Poster} alt="poster" /> : null}
+					</div>
+					<span>
+						{r.Title} <span className="search-result__year">({r.Year})</span>
+					</span>
 				</li>
 			))}
 		</ul>

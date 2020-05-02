@@ -35,7 +35,6 @@ export default class Cache {
 				// older than n days, remove
 				return show.added < EXPIRED_DATE
 			})
-			console.log('cache is', this.cache)
 		} catch (err) {
 			console.error('error parsing cached shows', err)
 		}
