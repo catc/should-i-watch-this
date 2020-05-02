@@ -22,7 +22,7 @@ export type SearchResult = {
 	imdbID: string
 }
 
-export const search = async (term: string) => {
+export const searchShows = async (term: string) => {
 	try {
 		const { data } = await omdb.get('', {
 			params: {
@@ -71,7 +71,7 @@ const getSeason = async (id: string, season: number) => {
 		})
 		return data as Season
 	} catch (err) {
-		console.log('error season', err)
+		console.error('error season', err)
 	}
 	return null
 }
