@@ -10,7 +10,10 @@ export default function SearchBar() {
 	const [results, setResults] = useState<SearchResult[] | null>(null)
 
 	// clear results
-	const clear = useCallback(() => setResults(null), [])
+	const clear = useCallback((resetTerm?: boolean) => {
+		setResults(null)
+		if (resetTerm) setTerm('')
+	}, [])
 
 	const search = useCallback(
 		async (term: string) => {

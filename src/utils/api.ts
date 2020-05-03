@@ -30,7 +30,6 @@ export const searchShows = async (term: string) => {
 				s: term,
 			},
 		})
-		console.log(data)
 		if (data && data.Search) {
 			return data.Search as SearchResult[]
 		}

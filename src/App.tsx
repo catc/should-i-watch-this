@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo } from 'react'
+import React from 'react'
 import SearchBar from './components/SearchBar'
 import { Provider } from './hooks/useAppState'
+import Graph from './components/Graph'
 
 function App() {
 	return (
@@ -9,6 +10,7 @@ function App() {
 				<h1>Is it worth watching?</h1>
 			</header>
 			<SearchBar />
+			<Graph />
 		</Provider>
 	)
 }

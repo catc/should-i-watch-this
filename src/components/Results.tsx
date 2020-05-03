@@ -4,7 +4,7 @@ import useAppState from '../hooks/useAppState'
 
 interface Props {
 	results: SearchResult[]
-	clear: () => void
+	clear: (resetTerm?: boolean) => void
 }
 
 enum KEY_CODES {
@@ -41,7 +41,7 @@ export default function SearchResults({ results, clear }: Props) {
 						focusedRef.current?.scrollIntoView(false)
 						break
 					case KEY_CODES.ENTER:
-						clear()
+						clear(true)
 						if (focused !== -1) selectShow(results[focused].imdbID)
 						break
 				}

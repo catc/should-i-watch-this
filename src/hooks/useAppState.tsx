@@ -1,15 +1,20 @@
-import React, { createContext, useContext, useMemo, useState, useCallback } from 'react'
+import React, {
+	createContext,
+	useContext,
+	useMemo,
+	useState,
+	useCallback,
+	useEffect,
+} from 'react'
 import Cache, { Show } from '../utils/cache'
 import { getShowInfo, getAllSeasons } from '../utils/api'
 
 type ContextType = {
-	// cache: Cache
 	selectShow: (id: string) => void
 	selectedShow: Show | null
 }
 
 const AppStateContext = createContext<ContextType>({
-	// cache: {} as Cache,
 	selectShow: () => {},
 	selectedShow: null,
 })
@@ -20,6 +25,13 @@ export function Provider({ children }: { children: React.ReactNode }) {
 	}, [])
 
 	const [selectedShow, select] = useState<Show | null>(null)
+
+	/*
+		FOR TESTING
+	*/
+	// useEffect(() => {
+	// 	select(cache.get('tt1439629'))
+	// }, [])
 
 	const selectShow = useCallback(
 		async (id: string) => {

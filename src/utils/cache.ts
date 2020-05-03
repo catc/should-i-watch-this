@@ -54,7 +54,6 @@ export default class Cache {
 			info: show,
 			seasons,
 		}
-		console.log('would set', show, seasons)
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(this.cache))
 	}
 }
