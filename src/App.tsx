@@ -1,7 +1,7 @@
 import React from 'react'
-import SearchBar from './components/SearchBar'
 import { Provider } from './hooks/useAppState'
-import Graph from './components/Graph'
+import SearchBar from './components/SearchBar'
+import Graph from './components/graph'
 
 function App() {
 	return (

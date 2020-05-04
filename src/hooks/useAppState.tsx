@@ -29,9 +29,10 @@ export function Provider({ children }: { children: React.ReactNode }) {
 	/*
 		FOR TESTING
 	*/
-	// useEffect(() => {
-	// 	select(cache.get('tt1439629'))
-	// }, [])
+	useEffect(() => {
+		select(cache.get('tt1439629')) // community
+		// select(cache.get('tt2085059')) // black mirror
+	}, [])
 
 	const selectShow = useCallback(
 		async (id: string) => {

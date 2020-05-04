@@ -10,12 +10,13 @@ export interface ShowData {
 	totalSeasons: number
 }
 
-interface Episode {
+export interface Episode {
 	Episode: number
 	Released: string
 	Title: string
 	imdbID: string
 	imdbRating: number
+	Season: number // manually added
 }
 
 export interface Season {
