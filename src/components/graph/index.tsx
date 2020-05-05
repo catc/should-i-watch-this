@@ -7,6 +7,7 @@ import * as d3 from 'd3'
 import { Season } from '../../utils/types'
 // import { create } from 'd3-selection'
 import mock1 from './mock/mock1'
+import { generateRange, calcSpacing } from './utils'
 
 export default function Graph() {
 	const { selectedShow } = useAppState()
@@ -31,15 +32,19 @@ export default function Graph() {
 	return <div className="graph" ref={ref} />
 }
 
-const MIN_SPACING = 15
 const DOT_SIZE = 5
-const SIZE = DOT_SIZE + MIN_SPACING
+const MIN_SPACING = 15 // min spacing between dots
+const PADDING = 20 // left and right padding of line
+
+const CHART_WIDTH = 800 // TODO - this should calculated
 
 function setupChart(ref, seasons: Season[]) {
 	const data = flatMap(seasons, season => {
 		season.Episodes.forEach(e => (e.Season = season.Season))
 		return season.Episodes
 	})
+
+	const episodes = data
 
 	console.log('CHART SETUP')
 	const width = 600
@@ -56,164 +61,121 @@ function setupChart(ref, seasons: Season[]) {
 		.attr('transform', 'translate(0,' + 0 + ')')
 		.attr('id', 'main')
 
-	const MIN_WIDTH = Math.max(width, data.length * (MIN_SPACING + DOT_SIZE))
+	//  ---------------------------------------
 
-	// get extents and range
-	const xExtent = d3.extent(data, (d, i) => {
-		return i
+	const DOT_SPACING = calcSpacing({
+		items: episodes.length,
+		chartWidth: CHART_WIDTH,
+		dotSize: DOT_SIZE,
+		minSpacing: MIN_SPACING,
 	})
-	const xRange = xExtent[1] - xExtent[0]
+	const SIZE = DOT_SIZE + DOT_SPACING
 
-	// yExtent = d3.extent(data, d => {
-	// 	return d.imdbRating
-	// }),
-	// yRange = yExtent[1] - yExtent[0]
+	const RANGES = generateRange(seasons)
+	const RANGES_NORMALIZED = RANGES.map(band => band * SIZE + PADDING)
+	const RANGES_NORMALIZED_NO_LAST = RANGES_NORMALIZED.slice(
+		0,
+		RANGES_NORMALIZED.length - 1,
+	)
+	// -dot_spacing since don't need right margin
+	const TOTAL_WIDTH = RANGES_NORMALIZED[RANGES.length - 1] - DOT_SPACING + PADDING
 
-	// set domain to be extent +- 5%
-	// x.domain([xExtent[0] - (xRange * .05), xExtent[1] + (xRange * .05)]);
-	// y.domain([yExtent[0] - (yRange * .05), yExtent[1] + (yRange * .05)]);
-
-	const xscale2 = d3
-		.scaleOrdinal()
-		// .scaleBand()
-		.domain([...seasons].map(season => String(season.Season)))
-		// .range([0, MIN_WIDTH]) //  TODO - set min width
-		// .range(seasons.map((season, i) => season.Episodes.length * SIZE))
-		.range(
-			[0, 10, 14, 24].map(a => a * SIZE),
-			// [0, 10, 14, 24, 29].map(a => a * SIZE),
-			// seasons.reduce((acc, season, i) => {
-			// 	const size = season.Episodes.length * SIZE
-			// 	if (!acc.length) {
-			// 		acc.push(0)
-			// 	} else {
-			// 		const prev = acc[i - 1]
-			// 		acc.push(prev + size)
-			// 	}
-			// 	// if (i > 0) {
-			// 	// 	const prev = acc[i - 1]
-			// 	// 	acc.push(prev + size)
-			// 	// } else {
-			// 	// }
-			// 	return acc
-			// }, []),
-		)
-
-	// .range([50, 100, 400, 50])
-	// .range(seasons.reduce((obj, ) => {}, []))
-	// ((season, i) => season.Episodes.length * 100))
-
-	// console.log(xscale2('1'))
-	// console.log(xscale2('2'))
-	// console.log(xscale2('3'))
-	// console.log(xscale2('4'))
-	// console.log(seasons.map((season, i) => season.Episodes.length * SIZE))
-	console.log(xscale2.range())
-	console.log(xscale2.domain())
-	// console.log(xscale2.bandwidth(3))
-	// xscale2.forEach(s => console.log(s.band))
-
-	// x axis lines
-	svg.append('g')
-		.attr('class', 'x-divider-lines')
-		.selectAll('line.season')
-		// lines
-		.data(seasons.filter((_, i) => i !== 0))
-		.join('line')
-		.attr('class', 'foo')
-		.attr('y1', 0)
-		.attr('y2', height)
-		.attr('x1', (d, i) => xscale2(d.Season))
-		.attr('x2', (d, i) => xscale2(d.Season))
-		.attr('stroke', '#222')
-		.attr('stroke-width', 1)
-
-	// .attr('height', height)
-	// .attr('transform', (d, i) => {
-	// 	return `translate(${50}, ${height})`
-	// })
-
-	// .step()
-	// .step([100, 100, 100, 100, 100, 100])
-	// .range(config.range)
-	// .paddingInner(paddingInner)
-	// .paddingOuter(paddingOuter)
-	// .align(config.align)
-	// .round(config.round)
+	// -------------------------
 
 	const xScale = d3
-		.scaleLinear()
-		.domain([0, data.length - 1]) // input
-		.range([0, width]) //  TODO - set min width
-		.domain([xExtent[0] - xRange * 0.02, data.length - 1])
+		.scaleOrdinal()
+		// .scaleBand()
+		.domain(seasons.map(season => String(season.Season)))
+		.range(RANGES_NORMALIZED_NO_LAST)
 
-	const X_SCALE_FIN = xscale2 // TODO - rename
-	// const X_SCALE_FIN = xScale // TODO - rename
-
-	// 6. Y scale will use the randomly generate number
-	const yScale = d3
-		.scaleLinear()
-		.domain([0, 10]) // input
-		.range([height, 0]) // output
-
-	const RANGE = X_SCALE_FIN.range()
-	main.append('g') // X AXIS
-		.attr('class', 'x axis')
+	// x axis
+	const xaxis = main
+		.append('g')
 		.attr('transform', 'translate(0,' + height + ')')
-		.call(
-			d3
-				.axisBottom(X_SCALE_FIN)
-				.tickSizeInner(0)
-				.tickPadding(10)
-				// .tickValues(a => console.log('a is', a))
-				.tickFormat(seasonNumber => `Season ${seasonNumber}`),
-		)
+		.attr('id', 'x-axis')
+	xaxis
+		.append('line')
+		.attr('class', 'x-axis')
+		.attr('y1', 0)
+		.attr('y2', 0)
+		.attr('x1', 0)
+		.attr('x2', TOTAL_WIDTH)
+
+	const VERTICAL_LINE_ADJUST = SIZE / 2
+
+	// x axis text
+	xaxis
 		.selectAll('text')
-		.attr('x', (seasonNumber, i, nodes) => {
-			// const bandWidth = i
-			// console.log('d and i', seasonNumber, i, nodes)
-			// console.log(RANGE)
+		.data(seasons)
+		.join('text')
+		.attr('class', 'x-axis-text')
+		.text(d => `Season ${d.Season}`)
+		.attr('y', 18)
+		.attr('x', (_, i) => {
+			const current = RANGES_NORMALIZED[i + 1]
+			const prev = RANGES_NORMALIZED[i]
+			return (current - prev) / 2 + prev - VERTICAL_LINE_ADJUST
 		})
+
+	// x axis vertical lines
+	main.append('g')
+		.attr('id', 'x-divider-lines')
+		.selectAll('line.season')
+		// lines
+		// .data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
+		.data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
+		.join('line')
+		.attr('class', 'vertical-season-line')
+		.attr('y1', 0)
+		.attr('y2', height)
+		.attr('x1', (d, i) => d - VERTICAL_LINE_ADJUST)
+		.attr('x2', (d, i) => d - VERTICAL_LINE_ADJUST)
+
+	// -------------------------
+
+	const yScale = d3.scaleLinear().domain([0, 10]).range([height, 0])
+
+	// .call(
+	// 	d3.axisBottom(X_SCALE_FIN).tickSizeInner(0).tickPadding(10),
+	// 	// .tickValues(a => console.log('a is', a))
+	// 	// .tickFormat(seasonNumber => `Season ${seasonNumber}`),
+	// )
+	// .selectAll('text')
+	// .attr('x', (seasonNumber, i, nodes) => {
+	// 	// const bandWidth = i
+	// 	// console.log('d and i', seasonNumber, i, nodes)
+	// 	// console.log(RANGE)
+	// })
 	// <div className=""></div>
 
 	// 4. Call the y axis in a group tag
-	svg.append('g').attr('class', 'y axis').call(d3.axisLeft(yScale)) // Create an axis component with d3.axisLeft
+	svg.append('g').attr('class', 'y-axis').call(d3.axisLeft(yScale)) // Create an axis component with d3.axisLeft
 
 	const getx = (d, i) => {
 		const key = `Season ${d.Season}`
 		// const key = d.Season
 		// console.log(X_SCALE_FIN(key), d.Episode * (DOT_SIZE + MIN_SPACING))
 		// return X_SCALE_FIN(i)
-		return X_SCALE_FIN(key) + (d.Episode - 1) * (DOT_SIZE + MIN_SPACING)
+		return xScale(key) + (d.Episode - 1) * (DOT_SIZE + DOT_SPACING)
 		// return X_SCALE_FIN(i)
 	}
 	const gety = d => yScale(d.imdbRating)
 
-	main.selectAll('.dot')
-		.data(data)
-		.enter()
-		.append('circle') // Uses the enter().append() method
-		.attr('class', 'dot') // Assign a class for styling
+	const dots = main.append('g').attr('id', 'dots')
+
+	// dots
+	dots.selectAll('.dot')
+		.data(episodes)
+		.join('circle')
+		.attr('class', 'dot')
 		.attr('cx', getx)
 		.attr('cy', gety)
 		.attr('r', DOT_SIZE)
-		.attr('fill', episode => {
-			// console.log(a)
-			return getColor(episode.Season)
-		})
+		.attr('fill', episode => getColor(episode.Season))
 
-	const line = d3 // LINE CONNECTING DOTS
-		.line()
-		// LEFT OFF HERE...
-		.x(getx) // set the x values for the line generator
-		.y(gety)
-		.curve(d3.curveMonotoneX) // apply smoothing to the line
-
-	// TODO - reenable line
-	main.append('path')
-		.datum(data) // 10. Binds data to the line
-		.attr('class', 'line') // Assign a class for styling
-		.attr('d', line) // 11. Calls the line generator
+	// line
+	const line = d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)
+	dots.append('path').datum(episodes).attr('class', 'dot-line').attr('d', line)
 
 	//  ----------------------
 	// test after

@@ -1,5 +1,5 @@
 /* Style the lines by removing the fill and applying a stroke */
-.line {
+.dot-line {
 	fill: none;
 	stroke: #ffab00;
 	stroke-width: 1;
@@ -39,3 +39,18 @@ svg {
 // }
 
 // .main {}
+
+
+.vertical-season-line {
+	stroke: #efefef;
+	stroke-width: 1;
+}
+
+.x-axis {
+	stroke-width: 1;
+	stroke: black;
+}
+
+.x-axis-text {
+	text-anchor: middle;
+}
