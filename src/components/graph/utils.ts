@@ -27,3 +27,25 @@ export const calcSpacing = ({
 }: CalcSpacingProps) => {
 	return Math.max(minSpacing, (chartWidth - items * dotSize) / items)
 }
+
+const COLORS = [
+	'#f44336',
+	'#9c27b0',
+	'#2196f3',
+	'#009688',
+	'#8bc34a',
+	'#ffc107',
+	'#fb8c00',
+	// '#2c7bb6',
+	// '#00a6ca',
+	// '#00ccbc',
+	// '#90eb9d',
+	// '#ffff8c',
+	// '#f9d057',
+	// '#f29e2e',
+	// '#e76818',
+	// '#d7191c',
+]
+export function getColor(i: number) {
+	return COLORS[i % COLORS.length]
+}
