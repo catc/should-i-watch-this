@@ -3,66 +3,66 @@ import * as d3 from 'd3'
 import flatten from 'lodash/flatten'
 import flatMap from 'lodash/flatMap'
 import { Season, Episode } from '../../utils/types'
-import { generateRange, calcSpacing, getColor } from './utils'
+import {
+	getColor,
+	calcChartValues,
+	// constants
+	DOT_SIZE,
+	MIN_SPACING,
+	PADDING,
+} from './utils'
 
-const DOT_SIZE = 5
-const MIN_SPACING = 15 // min spacing between dots
-const PADDING = 20 // left and right padding of line
+// const DOT_SIZE = 5
+// const MIN_SPACING = 15 // min spacing between dots
+// const PADDING = 20 // left and right padding of line
+
+type SeasonSelectionType = d3.Selection<any, Season, SVGElement, any>
+
+const fadeIn = (selection, t) =>
+	selection.style('opacity', '0').transition(t).style('opacity', 1)
+// selection.transition(t).style('opacity', 1)
+const fadeOut = (selection, t) => selection.transition(t).style('opacity', 0)
 
 const CHART_WIDTH = 800 // TODO - this should calculated
+const CHART_HEIGHT = 500 //. TODO - this should be calculted
 
 export function setupChart(ref, seasons: Season[]) {
-	const data = flatMap(seasons, season => {
+	const episodes = flatMap(seasons, season => {
 		season.Episodes.forEach(e => (e.Season = season.Season))
 		return season.Episodes
 	})
 
-	const episodes = data
+	const svg = d3
+		.select(ref)
+		.append('svg')
+		.attr('width', CHART_WIDTH)
+		.attr('height', CHART_HEIGHT)
 
-	console.log('CHART SETUP')
-	const width = 600
-	const height = 500
-	// const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
-
-	// const margin = { top: 20, right: 30, bottom: 30, left: 40 }
-	// const top =
-
-	const svg = d3.select(ref).append('svg').attr('width', width).attr('height', height)
-
+	const {
+		DOT_SPACING,
+		SIZE,
+		RANGES,
+		RANGES_NORMALIZED,
+		RANGES_NORMALIZED_NO_LAST,
+		TOTAL_WIDTH,
+		VERTICAL_LINE_ADJUST,
+	} = calcChartValues(CHART_WIDTH, seasons, episodes.length)
 	//  ---------------------------------------
-
-	const DOT_SPACING = calcSpacing({
-		items: episodes.length,
-		chartWidth: CHART_WIDTH,
-		dotSize: DOT_SIZE,
-		minSpacing: MIN_SPACING,
-	})
-	const SIZE = DOT_SIZE + DOT_SPACING
-
-	const RANGES = generateRange(seasons)
-	const RANGES_NORMALIZED = RANGES.map(band => band * SIZE + PADDING)
-	const RANGES_NORMALIZED_NO_LAST = RANGES_NORMALIZED.slice(
-		0,
-		RANGES_NORMALIZED.length - 1,
-	)
-	// -dot_spacing since don't need right margin
-	const TOTAL_WIDTH = RANGES_NORMALIZED[RANGES.length - 1] - DOT_SPACING + PADDING
 
 	// -------------------------
 
-	const xScale = d3
-		.scaleOrdinal()
-		// .scaleBand()
-		.domain(seasons.map(season => String(season.Season)))
-		.range(RANGES_NORMALIZED_NO_LAST)
+	const xScale = d3.scaleOrdinal()
+	// .scaleBand()
+	// .domain(seasons.map(season => String(season.Season)))
+	// .range(RANGES_NORMALIZED_NO_LAST)
 
 	// x axis
 	const xaxis = svg
 		.append('g')
-		.attr('transform', 'translate(0,' + height + ')')
+		.attr('transform', 'translate(0,' + CHART_HEIGHT + ')')
 		.attr('id', 'x-axis')
 
-	xaxis
+	const xAxisLine = xaxis
 		.append('line')
 		.attr('class', 'x-axis')
 		.attr('y1', 0)
@@ -70,70 +70,138 @@ export function setupChart(ref, seasons: Season[]) {
 		.attr('x1', 0)
 		.attr('x2', TOTAL_WIDTH)
 
-	const VERTICAL_LINE_ADJUST = SIZE / 2
+	// const xaxisLine =
 
-	// x axis text
-	xaxis
-		.selectAll('text')
-		.data(seasons)
-		.join('text')
-		.attr('class', 'x-axis-text')
-		.text(d => `Season ${d.Season}`)
-		.attr('y', 18)
-		.attr('x', (_, i) => {
-			const current = RANGES_NORMALIZED[i + 1]
-			const prev = RANGES_NORMALIZED[i]
-			return (current - prev) / 2 + prev - VERTICAL_LINE_ADJUST
-		})
+	// const VERTICAL_LINE_ADJUST = SIZE / 2
 
-	// x axis vertical lines
-	xaxis
-		.append('g')
-		.attr('id', 'x-divider-lines')
-		.selectAll('line.season')
-		// lines
-		// .data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
-		.data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
-		.join('line')
-		.attr('class', 'vertical-season-line')
-		.attr('y1', 0)
-		.attr('y2', -height)
-		.attr('x1', (d, i) => d - VERTICAL_LINE_ADJUST)
-		.attr('x2', (d, i) => d - VERTICAL_LINE_ADJUST)
+	// // x axis text
+	// xaxis
+	// 	.selectAll('text')
+	// 	.data(seasons)
+	// 	.join('text')
+	// 	.attr('class', 'x-axis-text')
+	// 	.text(d => `Season ${d.Season}`)
+	// 	.attr('y', 18)
+	// 	.attr('x', (_, i) => {
+	// 		const current = RANGES_NORMALIZED[i + 1]
+	// 		const prev = RANGES_NORMALIZED[i]
+	// 		return (current - prev) / 2 + prev - VERTICAL_LINE_ADJUST
+	// 	})
 
-	// -------------------------
+	// // x axis vertical lines
+	// xaxis
+	// 	.append('g')
+	// 	.attr('id', 'x-divider-lines')
+	// 	.selectAll('line.season')
+	// 	// lines
+	// 	// .data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
+	// 	.data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
+	// 	.join('line')
+	// 	.attr('class', 'vertical-season-line')
+	// 	.attr('y1', 0)
+	// 	.attr('y2', -CHART_HEIGHT)
+	// 	.attr('x1', (d, i) => d - VERTICAL_LINE_ADJUST)
+	// 	.attr('x2', (d, i) => d - VERTICAL_LINE_ADJUST)
 
-	const yScale = d3.scaleLinear().domain([0, 10]).range([height, 0])
+	// // -------------------------
 
-	svg.append('g').attr('id', 'y-axis').call(d3.axisLeft(yScale)) // Create an axis component with d3.axisLeft
+	// const yScale = d3.scaleLinear().domain([0, 10]).range([CHART_HEIGHT, 0])
 
-	const getx = (episode: Episode) =>
-		xScale(String(episode.Season)) + (episode.Episode - 1) * SIZE
-	const gety = (episode: Episode) => yScale(episode.imdbRating)
+	// svg.append('g').attr('id', 'y-axis').call(d3.axisLeft(yScale)) // Create an axis component with d3.axisLeft
 
-	const content = svg.append('g').attr('id', 'content')
+	// const getx = (episode: Episode) =>
+	// 	xScale(String(episode.Season)) + (episode.Episode - 1) * SIZE
+	// const gety = (episode: Episode) => yScale(episode.imdbRating)
 
-	// line
-	const line = d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)
-	content.append('path').datum(episodes).attr('class', 'dot-line').attr('d', line)
+	// const content = svg.append('g').attr('id', 'content')
 
-	// dots
-	content
-		.selectAll('.dot')
-		.data(episodes)
-		.join('circle')
-		.attr('class', 'dot')
-		.attr('cx', getx)
-		.attr('cy', gety)
-		.attr('r', DOT_SIZE)
-		.attr('fill', episode => getColor(episode.Season))
+	// // line
+	// const line = d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)
+	// content.append('path').datum(episodes).attr('class', 'dot-line').attr('d', line)
+
+	// // dots
+	// content
+	// 	.selectAll('.dot')
+	// 	.data(episodes)
+	// 	.join('circle')
+	// 	.attr('class', 'dot')
+	// 	.attr('cx', getx)
+	// 	.attr('cy', gety)
+	// 	.attr('r', DOT_SIZE)
+	// 	.attr('fill', episode => getColor(episode.Season))
 
 	//  ----------------------
-	// test after
 
-	// return Object.assign(svg.node(), {
-	// 	update(data){
+	function xAxisTextGetX(rangesNormalized: number[], verticalLineAdjust: number) {
+		return (_, i) => {
+			const current = rangesNormalized[i + 1]
+			const prev = rangesNormalized[i]
+			return (current - prev) / 2 + prev - verticalLineAdjust
+		}
+	}
 
-	// 	}
-	// })
+	function addXAxisText(
+		selection: SeasonSelectionType,
+		rangesNormalized: number[],
+		verticalLineAdjust: number,
+	) {
+		return selection
+			.attr('class', 'x-axis-text')
+			.text(season => `Season ${season.Season}`)
+			.attr('y', 18)
+			.attr('x', xAxisTextGetX(rangesNormalized, verticalLineAdjust))
+	}
+
+	let xAxisText = xaxis
+		.selectAll<any, Season>('text')
+		.data(seasons, (season: Season) => String(season.Season))
+		.join('text')
+		.call(addXAxisText, RANGES_NORMALIZED, VERTICAL_LINE_ADJUST)
+
+	return Object.assign(svg.node(), {
+		update(seasons: Season[]) {
+			const episodes = flatMap(seasons, season => {
+				season.Episodes.forEach(e => (e.Season = season.Season))
+				return season.Episodes
+			})
+
+			const t = svg.transition().duration(750)
+
+			const {
+				DOT_SPACING,
+				SIZE,
+				RANGES,
+				RANGES_NORMALIZED,
+				RANGES_NORMALIZED_NO_LAST,
+				TOTAL_WIDTH,
+				VERTICAL_LINE_ADJUST,
+			} = calcChartValues(CHART_WIDTH, seasons, episodes.length)
+
+			// x axis line
+			xAxisLine.transition(t).attr('x2', TOTAL_WIDTH)
+
+			//  x axis text
+			xAxisText = xaxis
+				.selectAll<any, Season>('text')
+				.data(seasons, (season: Season) => String(season.Season))
+				.join(
+					enter =>
+						enter
+							.append('text')
+							.call(addXAxisText, RANGES_NORMALIZED, VERTICAL_LINE_ADJUST)
+							.style('opacity', 0),
+					update => update,
+					exit => exit.transition(t).style('opacity', 0).remove(),
+				)
+				.transition(t)
+				.attr('x', xAxisTextGetX(RANGES_NORMALIZED, VERTICAL_LINE_ADJUST))
+				.style('opacity', 1)
+
+			//  ---------------------------------------
+			// TODO - incorporate this
+			xScale
+				.domain(seasons.map(season => String(season.Season)))
+				.range(RANGES_NORMALIZED_NO_LAST)
+		},
+	})
 }

@@ -1,7 +1,7 @@
-import { Season } from '../../utils/types'
+import { Season, Episode } from '../../utils/types'
 
 // returns range + 1
-export const generateRange = (seasons: Season[]) => {
+const generateRange = (seasons: Season[]) => {
 	return seasons.reduce(
 		(ranges, season, i) => {
 			const size = season.Episodes.length
@@ -14,18 +14,52 @@ export const generateRange = (seasons: Season[]) => {
 }
 
 interface CalcSpacingProps {
-	chartWidth: number
+	svgWidth: number
 	items: number
 	dotSize: number
 	minSpacing: number
 }
-export const calcSpacing = ({
-	items,
-	chartWidth,
-	dotSize,
-	minSpacing,
-}: CalcSpacingProps) => {
-	return Math.max(minSpacing, (chartWidth - items * dotSize) / items)
+const calcSpacing = ({ items, svgWidth, dotSize, minSpacing }: CalcSpacingProps) =>
+	Math.max(minSpacing, (svgWidth - items * dotSize) / items)
+
+// TODO - move elsewhere
+export const DOT_SIZE = 5
+export const MIN_SPACING = 15 // min spacing between dots
+export const PADDING = 20 // left and right padding of line
+
+export const calcChartValues = (
+	svgWidth: number,
+	seasons: Season[],
+	totalEpisodes: number,
+) => {
+	const DOT_SPACING = calcSpacing({
+		items: totalEpisodes,
+		svgWidth: svgWidth,
+		dotSize: DOT_SIZE,
+		minSpacing: MIN_SPACING,
+	})
+	const SIZE = DOT_SIZE + DOT_SPACING
+
+	const RANGES = generateRange(seasons)
+	const RANGES_NORMALIZED = RANGES.map(band => band * SIZE + PADDING)
+	const RANGES_NORMALIZED_NO_LAST = RANGES_NORMALIZED.slice(
+		0,
+		RANGES_NORMALIZED.length - 1,
+	)
+	// -dot_spacing since don't need right margin
+	const TOTAL_WIDTH = RANGES_NORMALIZED[RANGES.length - 1] - DOT_SPACING + PADDING
+
+	const VERTICAL_LINE_ADJUST = SIZE / 2
+
+	return {
+		DOT_SPACING,
+		SIZE,
+		RANGES,
+		RANGES_NORMALIZED,
+		RANGES_NORMALIZED_NO_LAST,
+		TOTAL_WIDTH,
+		VERTICAL_LINE_ADJUST,
+	}
 }
 
 const COLORS = [

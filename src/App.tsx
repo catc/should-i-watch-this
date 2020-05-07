@@ -6,10 +6,10 @@ import Graph from './components/graph'
 function App() {
 	return (
 		<Provider>
-			<header>
+			{/* <header>
 				<h1>Is it worth watching?</h1>
 			</header>
-			<SearchBar />
+			<SearchBar /> */}
 			<Graph />
 		</Provider>
 	)
