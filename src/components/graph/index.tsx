@@ -22,9 +22,11 @@ export default function Graph() {
 			// ON ENTER
 			// select()
 			// console.log('added!')
-			const s = setupChart(node, mock1)
+			// LEFT OFF HERE - bands arent calculated correctly, check with stuff here
+			// const s = setupChart(node, selectedShow?.seasons)
+			// const s = setupChart(node, mock1)
 			// console.log(s)
-			svg.current = s
+			// svg.current = s
 		}
 
 		ref.current = node
@@ -50,6 +52,15 @@ export default function Graph() {
 	// )
 	// function select(data) {
 	// }
+	useEffect(() => {
+		if (ref.current && selectedShow) {
+			const s = setupChart(ref.current, mock1)
+			// const s = setupChart(ref.current, selectedShow.seasons)
+			svg.current = s
+			console.log(selectedShow)
+		}
+	}, [selectedShow])
+
 	useEffect(() => {
 		const handler = e => {
 			if (e.keyCode === 37) select(mock1)

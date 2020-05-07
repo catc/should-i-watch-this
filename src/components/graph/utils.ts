@@ -4,7 +4,8 @@ import { Season, Episode } from '../../utils/types'
 const generateRange = (seasons: Season[]) => {
 	return seasons.reduce(
 		(ranges, season, i) => {
-			const size = season.Episodes.length
+			// use last episode of season for full number of episodes in season
+			const size = season.Episodes[season.Episodes.length - 1].Episode
 			const prev = ranges[i]
 			ranges.push(prev + size)
 			return ranges
@@ -24,7 +25,7 @@ const calcSpacing = ({ items, svgWidth, dotSize, minSpacing }: CalcSpacingProps)
 
 // TODO - move elsewhere
 export const DOT_SIZE = 5
-export const MIN_SPACING = 15 // min spacing between dots
+export const MIN_SPACING = 12 // min spacing between dots
 export const PADDING = 20 // left and right padding of line
 
 export const calcChartValues = (
