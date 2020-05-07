@@ -66,68 +66,6 @@ export function setupChart(ref, seasons: Season[]) {
 		.attr('x1', 0)
 		.attr('x2', TOTAL_WIDTH)
 
-	// const xaxisLine =
-
-	// const VERTICAL_LINE_ADJUST = SIZE / 2
-
-	// // x axis text
-	// xaxis
-	// 	.selectAll('text')
-	// 	.data(seasons)
-	// 	.join('text')
-	// 	.attr('class', 'x-axis-text')
-	// 	.text(d => `Season ${d.Season}`)
-	// 	.attr('y', 18)
-	// 	.attr('x', (_, i) => {
-	// 		const current = RANGES_NORMALIZED[i + 1]
-	// 		const prev = RANGES_NORMALIZED[i]
-	// 		return (current - prev) / 2 + prev - VERTICAL_LINE_ADJUST
-	// 	})
-
-	// // x axis vertical lines
-	// xaxis
-	// 	.append('g')
-	// 	.attr('id', 'x-divider-lines')
-	// 	.selectAll('line.season')
-	// 	// lines
-	// 	// .data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
-	// 	.data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
-	// 	.join('line')
-	// 	.attr('class', 'vertical-season-line')
-	// 	.attr('y1', 0)
-	// 	.attr('y2', -CHART_HEIGHT)
-	// 	.attr('x1', (d, i) => d - VERTICAL_LINE_ADJUST)
-	// 	.attr('x2', (d, i) => d - VERTICAL_LINE_ADJUST)
-
-	// // -------------------------
-
-	// const yScale = d3.scaleLinear().domain([0, 10]).range([CHART_HEIGHT, 0])
-
-	// svg.append('g').attr('id', 'y-axis').call(d3.axisLeft(yScale)) // Create an axis component with d3.axisLeft
-
-	// const getx = (episode: Episode) =>
-	// 	xScale(String(episode.Season)) + (episode.Episode - 1) * SIZE
-	// const gety = (episode: Episode) => yScale(episode.imdbRating)
-
-	// const content = svg.append('g').attr('id', 'content')
-
-	// // line
-	// const line = d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)
-	// content.append('path').datum(episodes).attr('class', 'dot-line').attr('d', line)
-
-	// // dots
-	// content
-	// 	.selectAll('.dot')
-	// 	.data(episodes)
-	// 	.join('circle')
-	// 	.attr('class', 'dot')
-	// 	.attr('cx', getx)
-	// 	.attr('cy', gety)
-	// 	.attr('r', DOT_SIZE)
-	// 	.attr('fill', episode => getColor(episode.Season))
-
-	//  ----------------------
-
 	function xAxisTextGetX(rangesNormalized: number[], verticalLineAdjust: number) {
 		return (_, i) => {
 			const current = rangesNormalized[i + 1]
@@ -190,8 +128,9 @@ export function setupChart(ref, seasons: Season[]) {
 
 	svg.append('g').attr('id', 'y-axis').call(d3.axisLeft(yScale))
 	const content = svg.append('g').attr('id', 'content')
+	const linepath = content.append('path').attr('class', 'dot-line')
 
-	function getXY(xScale, yScale, size) {
+	function getXY(xScale: any, yScale: any, size: number) {
 		return {
 			getx: (episode: Episode) => {
 				return xScale(String(episode.Season)) + (episode.Episode - 1) * size
@@ -199,41 +138,10 @@ export function setupChart(ref, seasons: Season[]) {
 			gety: (episode: Episode) => yScale(episode.imdbRating),
 		}
 	}
-	function generateLine(getx, gety, episodes) {
+
+	function generateLine(getx: any, gety: any, episodes: Episode[]) {
 		return d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)(episodes)
 	}
-
-	// function genget(xx, yy) {
-	// 	const getx = (episode: Episode) => {
-	// 		console.log(episode.Episode)
-	// 		return xx(String(episode.Season)) + (episode.Episode - 1) * SIZE
-	// 	}
-	// 	const gety = (episode: Episode) => yy(episode.imdbRating)
-	// 	return { getx, gety }
-	// }
-	// const getx = (episode: Episode) =>
-	// 	xScale(String(episode.Season)) + (episode.Episode - 1) * SIZE
-	// const gety = (episode: Episode) => yScale(episode.imdbRating)
-
-	// line
-	// const line = d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)
-	// const line = d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)
-
-	// const foo = selection => selection
-	//.x(getx).y(gety).curve(d3.curveMonotoneX)
-	// console.log(d3.line().call)
-	// return
-	// const line = d3.line().call(drawLine, xScale, yScale)
-	const linepath = content.append('path')
-
-	const { getx, gety } = getXY(xScale, yScale, SIZE)
-	const line = generateLine(getx, gety, episodes)
-	// const line = generateLine(getx, gety)
-
-	linepath
-		// .datum(episodes)
-		.attr('class', 'dot-line')
-		.attr('d', line)
 
 	function addDots(selection: EpisodeSelectionType) {
 		return selection
@@ -246,13 +154,57 @@ export function setupChart(ref, seasons: Season[]) {
 		return selection.attr('cx', getx).attr('cy', gety)
 	}
 
-	// dots
-	content
-		.selectAll<any, Episode>('.dot')
-		.data(episodes, (episode: Episode) => String(episode.Episode))
-		.join('circle')
-		.call(addDots)
-		.call(positionDots, getx, gety)
+	async function animateMainContent(
+		episodes: Episode[],
+		xScale: any,
+		size: number,
+		fadeout?: boolean,
+	) {
+		const t = svg.transition().duration(750) // TODO
+
+		if (!fadeout) {
+			// hide line
+			const linecomplete = linepath.transition(t).style('opacity', 0).end()
+			// hide dots
+			content.selectAll('.dot').transition(t).style('opacity', 0)
+
+			await linecomplete
+		}
+
+		const { getx, gety } = getXY(xScale, yScale, size)
+		const line = generateLine(getx, gety, episodes)
+		linepath.attr('d', line)
+		const len = linepath.node()!.getTotalLength()
+
+		// animate line
+		linepath
+			// set empty stroke
+			.attr('stroke-dasharray', len + ' ' + len)
+			.attr('stroke-dashoffset', len)
+			.style('opacity', 1)
+			// draw in
+			.transition()
+			.duration(2000)
+			.ease(d3.easeLinear)
+			.attr('stroke-dashoffset', 0)
+
+		// animate dots
+		const totalepisodes = episodes.length
+		content
+			.selectAll<any, Episode>('.dot')
+			.data(episodes, (episode: Episode) => String(episode.Episode))
+			.join(enter => enter.append('circle').call(addDots))
+			.call(positionDots, getx, gety)
+			.style('opacity', 0)
+			// fade in
+			.transition()
+			.duration(200)
+			.ease(d3.easeLinear)
+			.delay((_, i) => (2000 / totalepisodes) * (i + 2))
+			.style('opacity', 1)
+	}
+
+	animateMainContent(episodes, xScale, SIZE, true)
 
 	/*
 
@@ -271,8 +223,8 @@ export function setupChart(ref, seasons: Season[]) {
 			const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
 			const {
 				DOT_SPACING,
-				SIZE,
 				RANGES,
+				SIZE,
 				RANGES_NORMALIZED,
 				RANGES_NORMALIZED_NO_LAST,
 				TOTAL_WIDTH,
@@ -319,48 +271,12 @@ export function setupChart(ref, seasons: Season[]) {
 				.style('opacity', 1)
 
 			//  ---------------------------------------
+
 			xScale
 				.domain(seasons.map(season => String(season.Season)))
 				.range(RANGES_NORMALIZED_NO_LAST)
 
-			// hide line
-			const linecomplete = linepath.transition(t).style('opacity', 0).end()
-			// hide dots
-			content.selectAll('.dot').transition(t).style('opacity', 0)
-
-			await linecomplete
-
-			const { getx, gety } = getXY(xScale, yScale, SIZE)
-
-			// animate line
-			const line = generateLine(getx, gety, episodes)
-			linepath.attr('d', line)
-			const len = linepath.node()!.getTotalLength()
-			linepath
-				// set empty stroke
-				.attr('stroke-dasharray', len + ' ' + len)
-				.attr('stroke-dashoffset', len)
-				.style('opacity', 1)
-				// draw in
-				.transition()
-				.duration(2000)
-				.ease(d3.easeLinear)
-				.attr('stroke-dashoffset', 0)
-
-			// animate dots
-			const totalepisodes = episodes.length
-			content
-				.selectAll<any, Episode>('.dot')
-				.data(episodes, (episode: Episode) => String(episode.Episode))
-				.join(enter => enter.append('circle').call(addDots))
-				.call(positionDots, getx, gety)
-				.style('opacity', 0)
-				// fade in
-				.transition()
-				.duration(200)
-				.ease(d3.easeLinear)
-				.delay((_, i) => (2000 / totalepisodes) * (i + 2))
-				.style('opacity', 1)
+			animateMainContent(episodes, xScale, SIZE)
 		},
 	})
 }
