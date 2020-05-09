@@ -25,7 +25,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 		.attr('width', 1)
 		.attr('height', CHART_HEIGHT)
 
-	const svgMainContent = d3
+	const svgContent = d3
 		.select(ref)
 		.append('svg')
 		.attr('id', 'content-svg')
@@ -41,28 +41,29 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	const yScale = d3.scaleLinear().domain([0, 10]).range([CHART_HEIGHT, 0])
 	svgYAxis.append('g').attr('id', 'y-axis').call(d3.axisLeft(yScale))
 
-	// x axis
-	const contentg = svgMainContent.append('g').attr('id', 'content')
+	// x axis + content wrapper
+	const contentGroup = svgContent.append('g').attr('id', 'content')
 
-	const xaxis = contentg
+	// x axis
+	const xaxis = contentGroup
 		.append('g')
-		.attr('transform', 'translate(0,' + CHART_HEIGHT + ')')
+		.attr('transform', `translate(0, ${CHART_HEIGHT})`)
 		.attr('id', 'x-axis')
 
 	// create
 	const xAxisLine = createXAxisLine(xaxis)
 	const xAxisText = createXAxisText(xaxis)
 	const xAxisTicks = createXAxisTicks(xaxis)
-	const content = createMainContent(contentg, yScale)
+	const mainContent = createMainContent(contentGroup, yScale)
 
 	// draw
 	xAxisLine.generate(VALUES)
 	xAxisText.generate(VALUES, seasons)
 	xAxisTicks.generate(VALUES, CHART_HEIGHT)
-	content.generate(VALUES, seasons, episodes)
+	mainContent.generate(VALUES, seasons, episodes)
 
 	// TODO - clean this up
-	const drag = new Pan(svgMainContent, TOTAL_WIDTH)
+	const drag = new Pan(svgContent, TOTAL_WIDTH)
 	window.d = drag
 
 	return Object.assign(svgYAxis.node(), {
@@ -72,14 +73,14 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 				return season.Episodes
 			})
 
-			const t = svgMainContent.transition().duration(ANIMATE_AXIS_DURATION)
+			const t = svgContent.transition().duration(ANIMATE_AXIS_DURATION)
 			const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
 
 			// update
 			xAxisLine.update(VALUES, t)
 			xAxisText.update(VALUES, CHART_HEIGHT, seasons, t)
 			xAxisTicks.update(VALUES, CHART_HEIGHT, t)
-			content.update(VALUES, seasons, episodes)
+			mainContent.update(VALUES, seasons, episodes)
 
 			drag.reset()
 		},
