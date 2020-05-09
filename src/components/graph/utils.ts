@@ -1,4 +1,5 @@
 import { Season, Episode } from '../../utils/types'
+import { DOT_SIZE, MIN_SPACING, PADDING } from './constants'
 
 // returns range + 1
 const generateRange = (seasons: Season[]) => {
@@ -23,16 +24,21 @@ interface CalcSpacingProps {
 const calcSpacing = ({ items, svgWidth, dotSize, minSpacing }: CalcSpacingProps) =>
 	Math.max(minSpacing, (svgWidth - items * dotSize) / items)
 
-// TODO - move elsewhere
-export const DOT_SIZE = 5
-export const MIN_SPACING = 12 // min spacing between dots
-export const PADDING = 20 // left and right padding of line
+export interface ChartValues {
+	DOT_SPACING: number
+	SIZE: number
+	RANGES: number[]
+	RANGES_NORMALIZED: number[]
+	RANGES_NORMALIZED_NO_LAST: number[]
+	TOTAL_WIDTH: number
+	VERTICAL_LINE_ADJUST: number
+}
 
 export const calcChartValues = (
 	svgWidth: number,
 	seasons: Season[],
 	totalEpisodes: number,
-) => {
+): ChartValues => {
 	const DOT_SPACING = calcSpacing({
 		items: totalEpisodes,
 		svgWidth: svgWidth,
@@ -66,9 +72,9 @@ export const calcChartValues = (
 const COLORS = [
 	'#f44336',
 	'#9c27b0',
-	'#2196f3',
 	'#009688',
 	'#8bc34a',
+	'#2196f3',
 	'#ffc107',
 	'#fb8c00',
 	// '#2c7bb6',

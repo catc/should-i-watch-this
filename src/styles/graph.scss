@@ -1,3 +1,22 @@
+.graph {
+	margin: 50px;
+	display: flex;
+	height: 100%;
+	min-height: 500px;
+}
+
+#y-axis-svg {
+	overflow: visible;
+	vertical-align: top;
+}
+
+#content-svg {
+	// overflow: visible;
+	vertical-align: top;
+	width: 100%;
+}
+
+
 /* Style the lines by removing the fill and applying a stroke */
 .dot-line {
 	fill: none;
@@ -20,19 +39,6 @@
 	fill: none;
 	stroke: steelblue;
 }
-
-svg {
-	overflow: visible !important;
-}
-
-.graph {
-	margin: 50px;
-
-	svg {
-		// border: 1px solid red;
-	}
-}
-
 
 // svg {
 // 	overflow: hidden;
