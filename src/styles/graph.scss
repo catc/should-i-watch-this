@@ -60,3 +60,20 @@
 .x-axis-text {
 	text-anchor: middle;
 }
+
+
+.y-tick, .y-tick-em {
+	stroke: red;
+	stroke-dasharray: 3 5;
+	opacity: 0.3;
+	shape-rendering: crispEdges;
+}
+
+.y-tick-em {
+	stroke: white;
+	stroke-dasharray: 0;
+}
+
+#y-axis-svg {
+	// text { }
+}

@@ -7,6 +7,7 @@ import { createXAxisTicks, createXAxisText, createXAxisLine } from './x-axis'
 import { ANIMATE_AXIS_DURATION } from './constants'
 import Pan from './pan'
 import { createMainContent } from './main-content'
+import { createYAxis } from './y-axis'
 
 window.d3 = d3 // FOR TESTING
 
@@ -16,7 +17,10 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 		return season.Episodes
 	})
 
+	// TODO - add resize support
 	const { width: CHART_WIDTH, height: CHART_HEIGHT } = ref.getBoundingClientRect()
+
+	const yScale = d3.scaleLinear().domain([0, 10]).range([CHART_HEIGHT, 0])
 
 	const svgYAxis = d3
 		.select(ref)
@@ -32,14 +36,10 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 		.attr('width', CHART_WIDTH)
 		.attr('height', CHART_HEIGHT + 50)
 
-	const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
-	const { TOTAL_WIDTH } = VALUES
-
 	//  ---------------------------------------
 
-	// y scale
-	const yScale = d3.scaleLinear().domain([0, 10]).range([CHART_HEIGHT, 0])
-	svgYAxis.append('g').attr('id', 'y-axis').call(d3.axisLeft(yScale))
+	const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
+	const { TOTAL_WIDTH } = VALUES
 
 	// x axis + content wrapper
 	const contentGroup = svgContent.append('g').attr('id', 'content')
@@ -50,13 +50,14 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 		.attr('transform', `translate(0, ${CHART_HEIGHT})`)
 		.attr('id', 'x-axis')
 
-	// create
+	// create chart elements
+	const yAxis = createYAxis(svgYAxis, yScale, VALUES)
 	const xAxisLine = createXAxisLine(xaxis)
 	const xAxisText = createXAxisText(xaxis)
 	const xAxisTicks = createXAxisTicks(xaxis)
 	const mainContent = createMainContent(contentGroup, yScale)
 
-	// draw
+	// draw chart
 	xAxisLine.generate(VALUES)
 	xAxisText.generate(VALUES, seasons)
 	xAxisTicks.generate(VALUES, CHART_HEIGHT)
@@ -66,7 +67,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	const drag = new Pan(svgContent, TOTAL_WIDTH)
 	window.d = drag
 
-	return Object.assign(svgYAxis.node(), {
+	return {
 		async update(seasons: Season[]) {
 			const episodes = flatMap(seasons, season => {
 				season.Episodes.forEach(e => (e.Season = season.Season))
@@ -76,7 +77,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 			const t = svgContent.transition().duration(ANIMATE_AXIS_DURATION)
 			const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
 
-			// update
+			// update chart
 			xAxisLine.update(VALUES, t)
 			xAxisText.update(VALUES, CHART_HEIGHT, seasons, t)
 			xAxisTicks.update(VALUES, CHART_HEIGHT, t)
@@ -84,5 +85,5 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 
 			drag.reset()
 		},
-	})
+	}
 }
