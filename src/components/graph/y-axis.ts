@@ -1,12 +1,10 @@
 import { ChartValues } from './utils'
 import * as d3 from 'd3'
 
-export function createYAxis(
-	svg: any,
-	yScale: d3.ScaleLinear<number, number>,
-	values: ChartValues,
-) {
+export function createYAxis(svg: any, chartHeight: number, values: ChartValues) {
 	const { TOTAL_WIDTH } = values
+
+	const yScale = d3.scaleLinear().domain([0, 10]).range([chartHeight, 0])
 
 	svg.call(d3.axisLeft(yScale).tickSizeOuter(0))
 		.selectAll('line')
@@ -16,6 +14,7 @@ export function createYAxis(
 		.remove()
 
 	return {
-		create() {},
+		// create() {},
+		yScale,
 	}
 }

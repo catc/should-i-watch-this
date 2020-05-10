@@ -20,8 +20,6 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	// TODO - add resize support
 	const { width: CHART_WIDTH, height: CHART_HEIGHT } = ref.getBoundingClientRect()
 
-	const yScale = d3.scaleLinear().domain([0, 10]).range([CHART_HEIGHT, 0])
-
 	const svgYAxis = d3
 		.select(ref)
 		.append('svg')
@@ -51,7 +49,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 		.attr('id', 'x-axis')
 
 	// create chart elements
-	const yAxis = createYAxis(svgYAxis, yScale, VALUES)
+	const { yScale } = createYAxis(svgYAxis, CHART_HEIGHT, VALUES)
 	const xAxisLine = createXAxisLine(xaxis)
 	const xAxisText = createXAxisText(xaxis)
 	const xAxisTicks = createXAxisTicks(xaxis)
