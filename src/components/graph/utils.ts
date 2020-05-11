@@ -20,14 +20,20 @@ interface CalcSpacingProps {
 	items: number
 	dotSize: number
 	minSpacing: number
+	padding?: number
 }
-export const calcSpacing = ({ items, svgWidth, dotSize, minSpacing }: CalcSpacingProps) =>
-	Math.max(minSpacing, (svgWidth - items * dotSize) / items)
+export const calcSpacing = ({
+	items,
+	svgWidth,
+	dotSize,
+	minSpacing,
+	padding = 0,
+}: CalcSpacingProps) =>
+	Math.max(minSpacing, (svgWidth - padding * 2 - items * dotSize) / (items - 1))
 
 export interface ChartValues {
 	DOT_SPACING: number
 	SIZE: number
-	RANGES: number[]
 	RANGES_NORMALIZED: number[]
 	RANGES_NORMALIZED_NO_LAST: number[]
 	TOTAL_WIDTH: number
@@ -44,25 +50,25 @@ export const calcChartValues = (
 		svgWidth: svgWidth,
 		dotSize: DOT_SIZE,
 		minSpacing: MIN_SPACING,
+		padding: PADDING,
 	})
 	const SIZE = DOT_SIZE + DOT_SPACING
 
 	const RANGES = generateRange(seasons)
 	const RANGES_NORMALIZED = RANGES.map(band => band * SIZE + PADDING)
+	console.log(RANGES, RANGES_NORMALIZED)
 	const RANGES_NORMALIZED_NO_LAST = RANGES_NORMALIZED.slice(
 		0,
 		RANGES_NORMALIZED.length - 1,
 	)
-	// -dot_spacing since don't need right margin
-	const TOTAL_WIDTH =
-		RANGES_NORMALIZED[RANGES.length - 1] - DOT_SPACING + PADDING - DOT_SIZE
+	// - DOT_SPACING since don't need right margin, + PADDING to account for right padding
+	const TOTAL_WIDTH = RANGES_NORMALIZED[RANGES.length - 1] - DOT_SPACING + PADDING
 
 	const VERTICAL_LINE_ADJUST = SIZE / 2
 
 	return {
 		DOT_SPACING,
 		SIZE,
-		RANGES,
 		RANGES_NORMALIZED,
 		RANGES_NORMALIZED_NO_LAST,
 		TOTAL_WIDTH,
