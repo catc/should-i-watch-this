@@ -100,3 +100,24 @@ line {
 #y-axis-svg {
 	// text { }
 }
+
+#tooltip-rect {
+	fill: transparent;
+}
+
+
+
+// testing
+.tooltip-wrapper {
+	height: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.tooltip {
+	margin: 0 2em;
+	display: inline-block;
+	border: 1px solid #ddd;
+	width: 300px;
+}

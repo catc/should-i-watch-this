@@ -5,13 +5,13 @@ import { Season, Episode } from '../../utils/types'
 import { getColor, calcChartValues } from './utils'
 import { createXAxisTicks, createXAxisText, createXAxisLine } from './x-axis'
 import { ANIMATE_AXIS_DURATION } from './constants'
-import { createMainContent } from './main-content'
+import { createMainContent, createTooltip } from './main-content'
 import { createYAxis } from './y-axis'
 import createPan from './pan'
 
 window.d3 = d3 // FOR TESTING
 
-export function setupChart(ref: HTMLElement, seasons: Season[]) {
+export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: any) {
 	const episodes = flatMap(seasons, season => {
 		season.Episodes.forEach(e => (e.Season = season.Season))
 		return season.Episodes
@@ -54,6 +54,10 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	const xAxisTicks = createXAxisTicks(xaxis)
 	const mainContent = createMainContent(contentGroup, yScale)
 
+	/*
+		TODO - remove generate method, should be part of `create...` constructor/init
+	*/
+
 	// draw chart
 	xAxisLine.generate(VALUES)
 	xAxisText.generate(VALUES, seasons)
@@ -61,6 +65,13 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	mainContent.generate(VALUES, seasons, episodes)
 
 	const pan = createPan(svgContent, CHART_HEIGHT, VALUES)
+	const tooltip = createTooltip(
+		svgContent,
+		CHART_HEIGHT,
+		VALUES,
+		episodes,
+		updateTooltip,
+	)
 
 	return {
 		async update(seasons: Season[]) {
@@ -80,6 +91,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 			xAxisText.update(VALUES, CHART_HEIGHT, seasons, t)
 			xAxisTicks.update(VALUES, CHART_HEIGHT, t)
 			await mainContent.update(VALUES, seasons, episodes)
+			tooltip.update(VALUES, episodes)
 		},
 	}
 }

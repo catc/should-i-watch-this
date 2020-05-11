@@ -1,15 +1,29 @@
-import React, { useEffect, useRef, useCallback, useMemo, useLayoutEffect } from 'react'
+import React, {
+	useEffect,
+	useRef,
+	useCallback,
+	useMemo,
+	useLayoutEffect,
+	useState,
+} from 'react'
 import useAppState from '../../hooks/useAppState'
 
 // import { create } from 'd3-selection'
 import mock1 from './mock/mock1'
 import { setupChart } from './gen'
+import { Episode } from '../../utils/types'
 
 export default function Graph() {
 	const { selectedShow } = useAppState()
 	const ref = useRef(null)
 	const svg = useRef(null)
 	// const { cu/rrent: svg } = svgRef
+
+	const [tooltipData, setTooltipData] = useState(null)
+
+	const tooltip = useCallback((episode: Episode | null) => {
+		setTooltipData(episode)
+	}, [])
 
 	const setRef = useCallback(node => {
 		if (ref.current) {
@@ -54,8 +68,8 @@ export default function Graph() {
 	// }
 	useEffect(() => {
 		if (ref.current && selectedShow) {
-			const s = setupChart(ref.current, mock1)
-			// const s = setupChart(ref.current, selectedShow.seasons)
+			const s = setupChart(ref.current, mock1, tooltip)
+			// const s = setupChart(ref.current, selectedShow.seasons, tooltip)
 			svg.current = s
 			console.log(selectedShow)
 		}
@@ -93,6 +107,15 @@ export default function Graph() {
 		<div>
 			<button onClick={() => select(mock1)}>One</button>
 			<button onClick={() => select(selectedShow.seasons)}>Two</button>
+			<div className="tooltip-wrapper">
+				{tooltipData && (
+					<div className="tooltip">
+						season:episode :: {tooltipData.Season} : {tooltipData.Episode}
+						<br />
+						Rating: {tooltipData.imdbRating}
+					</div>
+				)}
+			</div>
 			<br />
 			<div className="graph" ref={setRef} />
 		</div>

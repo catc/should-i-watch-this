@@ -7,7 +7,10 @@ import {
 	EpisodeSelectionType,
 	ANIMATE_CONTENT_DURATION,
 	ANIMATE_AXIS_DURATION,
+	SvgSelection,
+	PADDING,
 } from './constants'
+import { bisector } from 'd3'
 
 function getXY(xScale: any, yScale: any, size: number) {
 	return {
@@ -101,5 +104,59 @@ export function createMainContent(
 			await linecomplete
 			await animate(values, seasons, episodes)
 		},
+	}
+}
+
+/*
+	TODO - fix drag on non-extend charts
+*/
+export function createTooltip(
+	content: SvgSelection,
+	chartHeight: number,
+	values: ChartValues,
+	episodes: Episode[],
+	tooltip: any,
+) {
+	const rect = content
+		.append('rect')
+		.attr('id', 'tooltip-rect')
+		.attr('x', 0)
+		.attr('y', 0)
+		.attr('height', chartHeight)
+
+	function update(values: ChartValues, episodes: Episode[]) {
+		const { TOTAL_WIDTH, RANGES_NORMALIZED, SIZE } = values
+
+		// update width
+		rect.attr('width', TOTAL_WIDTH)
+
+		// create bisector
+		const bisect = d3.bisector((episode: Episode, x: number) => {
+			const min =
+				RANGES_NORMALIZED[episode.Season - 1] +
+				(episode.Episode - 1) * SIZE +
+				PADDING
+			// console.log(`${episode.Season} :: ${episode.Episode}`, '::', min.toFixed(1), x)
+			return min - x
+		}).left
+
+		// add listeners
+		rect.on('mouseout', () => {
+			console.log('off')
+			tooltip(null)
+		}).on('mousemove', function mousemove() {
+			const m = d3.mouse(this)
+			const x = m[0]
+
+			const i = bisect(episodes, x)
+			const episode = episodes[i]
+			tooltip(episode)
+		})
+	}
+
+	update(values, episodes)
+
+	return {
+		update,
 	}
 }
