@@ -60,7 +60,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	xAxisTicks.generate(VALUES, CHART_HEIGHT)
 	mainContent.generate(VALUES, seasons, episodes)
 
-	const drag = createPan(svgContent, CHART_HEIGHT, VALUES)
+	const pan = createPan(svgContent, CHART_HEIGHT, VALUES)
 
 	return {
 		async update(seasons: Season[]) {
@@ -71,7 +71,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 
 			const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
 
-			await drag.reset(VALUES)
+			await pan.reset(VALUES)
 
 			const t = svgContent.transition().duration(ANIMATE_AXIS_DURATION)
 

@@ -21,7 +21,7 @@ interface CalcSpacingProps {
 	dotSize: number
 	minSpacing: number
 }
-const calcSpacing = ({ items, svgWidth, dotSize, minSpacing }: CalcSpacingProps) =>
+export const calcSpacing = ({ items, svgWidth, dotSize, minSpacing }: CalcSpacingProps) =>
 	Math.max(minSpacing, (svgWidth - items * dotSize) / items)
 
 export interface ChartValues {
