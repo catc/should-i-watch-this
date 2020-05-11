@@ -11,7 +11,6 @@ export const MIN_SPACING = 15 // min spacing between dots
 export const PADDING = 20 // left and right padding of line
 
 export const ANIMATE_AXIS_DURATION = 750
-// export const ANIMATE_CONTENT_DURATION = 1800
 export const ANIMATE_CONTENT_DURATION = 1800
 
 export const CONTENT_ID = '#content'

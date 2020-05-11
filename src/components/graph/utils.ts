@@ -56,7 +56,6 @@ export const calcChartValues = (
 
 	const RANGES = generateRange(seasons)
 	const RANGES_NORMALIZED = RANGES.map(band => band * SIZE + PADDING)
-	console.log(RANGES, RANGES_NORMALIZED)
 	const RANGES_NORMALIZED_NO_LAST = RANGES_NORMALIZED.slice(
 		0,
 		RANGES_NORMALIZED.length - 1,
