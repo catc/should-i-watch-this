@@ -33,7 +33,9 @@ export default class Cache {
 
 			this.cache = omitBy(shows, show => {
 				// older than n days, remove
-				return show.added < EXPIRED_DATE
+				return false
+				// TODO - reenable
+				// return show.added < EXPIRED_DATE
 			})
 		} catch (err) {
 			console.error('error parsing cached shows', err)

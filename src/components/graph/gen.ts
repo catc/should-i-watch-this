@@ -5,9 +5,9 @@ import { Season, Episode } from '../../utils/types'
 import { getColor, calcChartValues } from './utils'
 import { createXAxisTicks, createXAxisText, createXAxisLine } from './x-axis'
 import { ANIMATE_AXIS_DURATION } from './constants'
-import Pan from './pan'
 import { createMainContent } from './main-content'
 import { createYAxis } from './y-axis'
+import createPan from './pan'
 
 window.d3 = d3 // FOR TESTING
 
@@ -37,7 +37,6 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	//  ---------------------------------------
 
 	const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
-	const { TOTAL_WIDTH } = VALUES
 
 	// x axis + content wrapper
 	const contentGroup = svgContent.append('g').attr('id', 'content')
@@ -49,7 +48,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 		.attr('id', 'x-axis')
 
 	// create chart elements
-	const { yScale } = createYAxis(svgYAxis, CHART_HEIGHT, VALUES)
+	const { yScale } = createYAxis(svgYAxis, CHART_HEIGHT, CHART_WIDTH)
 	const xAxisLine = createXAxisLine(xaxis)
 	const xAxisText = createXAxisText(xaxis)
 	const xAxisTicks = createXAxisTicks(xaxis)
@@ -61,9 +60,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 	xAxisTicks.generate(VALUES, CHART_HEIGHT)
 	mainContent.generate(VALUES, seasons, episodes)
 
-	// TODO - clean this up
-	const drag = new Pan(svgContent, TOTAL_WIDTH)
-	window.d = drag
+	const drag = createPan(svgContent, CHART_HEIGHT, VALUES)
 
 	return {
 		async update(seasons: Season[]) {
@@ -72,16 +69,17 @@ export function setupChart(ref: HTMLElement, seasons: Season[]) {
 				return season.Episodes
 			})
 
-			const t = svgContent.transition().duration(ANIMATE_AXIS_DURATION)
 			const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
+
+			await drag.reset(VALUES)
+
+			const t = svgContent.transition().duration(ANIMATE_AXIS_DURATION)
 
 			// update chart
 			xAxisLine.update(VALUES, t)
 			xAxisText.update(VALUES, CHART_HEIGHT, seasons, t)
 			xAxisTicks.update(VALUES, CHART_HEIGHT, t)
-			mainContent.update(VALUES, seasons, episodes)
-
-			drag.reset()
+			await mainContent.update(VALUES, seasons, episodes)
 		},
 	}
 }

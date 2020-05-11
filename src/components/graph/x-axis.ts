@@ -101,20 +101,20 @@ export function createXAxisTicks(xaxis: D3Selection) {
 	const ticks = xaxis.append('g').attr('id', 'x-divider-lines')
 	return {
 		generate(values: ChartValues, CHART_HEIGHT: number) {
-			const { RANGES_NORMALIZED, VERTICAL_LINE_ADJUST } = values
+			const { RANGES_NORMALIZED_NO_LAST, VERTICAL_LINE_ADJUST } = values
 			ticks
 				.selectAll('line')
-				// .data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
-				.data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
+				.data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
+				// .data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
 				.join('line')
 				.call(addXAxisTicks, VERTICAL_LINE_ADJUST, CHART_HEIGHT)
 		},
 		update(values: ChartValues, CHART_HEIGHT: number, t: TransitionType) {
-			const { RANGES_NORMALIZED, VERTICAL_LINE_ADJUST } = values
+			const { RANGES_NORMALIZED_NO_LAST, VERTICAL_LINE_ADJUST } = values
 			ticks
 				.selectAll('line')
-				// .data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
-				.data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
+				.data(RANGES_NORMALIZED_NO_LAST.filter((_, i) => i !== 0))
+				// .data(RANGES_NORMALIZED.filter((_, i) => i !== 0)) // FOR TESTING ONLY
 				.join(
 					enter =>
 						enter

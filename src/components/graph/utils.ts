@@ -54,7 +54,8 @@ export const calcChartValues = (
 		RANGES_NORMALIZED.length - 1,
 	)
 	// -dot_spacing since don't need right margin
-	const TOTAL_WIDTH = RANGES_NORMALIZED[RANGES.length - 1] - DOT_SPACING + PADDING
+	const TOTAL_WIDTH =
+		RANGES_NORMALIZED[RANGES.length - 1] - DOT_SPACING + PADDING - DOT_SIZE
 
 	const VERTICAL_LINE_ADJUST = SIZE / 2
 

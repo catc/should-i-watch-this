@@ -54,8 +54,8 @@ export default function Graph() {
 	// }
 	useEffect(() => {
 		if (ref.current && selectedShow) {
-			const s = setupChart(ref.current, mock1)
-			// const s = setupChart(ref.current, selectedShow.seasons)
+			// const s = setupChart(ref.current, mock1)
+			const s = setupChart(ref.current, selectedShow.seasons)
 			svg.current = s
 			console.log(selectedShow)
 		}

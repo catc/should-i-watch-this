@@ -14,6 +14,7 @@
 	// overflow: visible;
 	vertical-align: top;
 	width: 100%;
+	border: 1px solid red;
 }
 
 
@@ -40,6 +41,22 @@
 	stroke: steelblue;
 }
 
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.fade-rect {
+	fill: transparent;
+	// animation: 1.5s ease fadeIn;
+	// fill: linear-gradient(to right, red, yellow);
+}
+
 // svg {
 // 	overflow: hidden;
 // }
@@ -63,14 +80,14 @@
 
 
 .y-tick, .y-tick-em {
-	stroke: red;
+	stroke: rgba(black, 0.4);
 	stroke-dasharray: 3 5;
 	opacity: 0.3;
 	shape-rendering: crispEdges;
 }
 
 .y-tick-em {
-	stroke: white;
+	stroke: black;
 	stroke-dasharray: 0;
 }
 

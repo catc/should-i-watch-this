@@ -71,7 +71,11 @@ export function createMainContent(
 		group
 			.selectAll<any, Episode>('.dot')
 			.data(episodes, (episode: Episode) => String(episode.Episode))
-			.join(enter => enter.append('circle').call(addDots))
+			.join(
+				enter => enter.append('circle').call(addDots),
+				update =>
+					update.attr('fill', (episode: Episode) => getColor(episode.Season)),
+			)
 			.call(positionDots, getx, gety)
 			.style('opacity', 0)
 			// fade in
