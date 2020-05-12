@@ -18,6 +18,7 @@ line {
 	// overflow: visible;
 	vertical-align: top;
 	width: 100%;
+	// cursor: grab;
 	// border: 1px solid red;
 }
 
@@ -95,6 +96,7 @@ line {
 .y-tick-em {
 	stroke: rgba(black, 0.7);
 	stroke-dasharray: 0;
+	stroke-width: 2;
 }
 
 #y-axis-svg {
@@ -116,8 +118,15 @@ line {
 }
 
 .tooltip {
-	margin: 0 2em;
+	// margin: 0 2em;
 	display: inline-block;
 	border: 1px solid #ddd;
 	width: 300px;
+
+	position: absolute;
+	background: white;
+
+	text {
+		text-anchor: middle;
+	}
 }

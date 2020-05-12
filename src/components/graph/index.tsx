@@ -20,6 +20,7 @@ export default function Graph() {
 	// const { cu/rrent: svg } = svgRef
 
 	const [tooltipData, setTooltipData] = useState(null)
+	// const [tooltipData, setTooltipData] = useState({ Season: 1, Episode: 5 })
 
 	const tooltip = useCallback((episode: Episode | null) => {
 		setTooltipData(episode)
@@ -68,8 +69,8 @@ export default function Graph() {
 	// }
 	useEffect(() => {
 		if (ref.current && selectedShow) {
-			const s = setupChart(ref.current, mock1, tooltip)
-			// const s = setupChart(ref.current, selectedShow.seasons, tooltip)
+			// const s = setupChart(ref.current, mock1, tooltip)
+			const s = setupChart(ref.current, selectedShow.seasons, tooltip)
 			svg.current = s
 			console.log(selectedShow)
 		}
@@ -107,7 +108,9 @@ export default function Graph() {
 		<div>
 			<button onClick={() => select(mock1)}>One</button>
 			<button onClick={() => select(selectedShow.seasons)}>Two</button>
-			<div className="tooltip-wrapper">
+			<div className="tooltip-wrapper" />
+			<br />
+			<div className="graph" ref={setRef}>
 				{tooltipData && (
 					<div className="tooltip">
 						season:episode :: {tooltipData.Season} : {tooltipData.Episode}
@@ -116,8 +119,6 @@ export default function Graph() {
 					</div>
 				)}
 			</div>
-			<br />
-			<div className="graph" ref={setRef} />
 		</div>
 	)
 }

@@ -128,7 +128,7 @@ export default function createPan(svg: any, chartHeight: number, values: ChartVa
 		}
 
 		function dragended() {
-			svg.attr('cursor', 'grab')
+			svg.attr('cursor', '')
 		}
 
 		function zoomed() {

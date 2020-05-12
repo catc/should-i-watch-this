@@ -5,9 +5,10 @@ import { Season, Episode } from '../../utils/types'
 import { getColor, calcChartValues } from './utils'
 import { createXAxisTicks, createXAxisText, createXAxisLine } from './x-axis'
 import { ANIMATE_AXIS_DURATION } from './constants'
-import { createMainContent, createTooltip } from './main-content'
+import { createMainContent } from './main-content'
 import { createYAxis } from './y-axis'
 import createPan from './pan'
+import { createTooltip } from './tooltip'
 
 window.d3 = d3 // FOR TESTING
 
@@ -70,7 +71,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: a
 		CHART_HEIGHT,
 		VALUES,
 		episodes,
-		updateTooltip,
+		// updateTooltip,
 	)
 
 	return {
