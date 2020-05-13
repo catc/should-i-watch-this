@@ -2,6 +2,8 @@ import * as d3 from 'd3'
 import { parseSvg } from 'd3-interpolate/src/transform/parse'
 import { CONTENT_ID, D3Selection } from './constants'
 import { ChartValues } from './utils'
+import { createTooltip } from './tooltip'
+import { Episode } from '../../utils/types'
 
 const FADE_WIDTH = 100
 const LEFT_FADE_GRADIENT_ID = 'left-fade-gradient'

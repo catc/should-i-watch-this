@@ -60,6 +60,7 @@ line {
 
 .fade-rect {
 	fill: transparent;
+	pointer-events: none;
 	// animation: 1.5s ease fadeIn;
 	// fill: linear-gradient(to right, red, yellow);
 }
@@ -103,7 +104,7 @@ line {
 	// text { }
 }
 
-#tooltip-rect {
+#tooltip-overlay {
 	fill: transparent;
 }
 

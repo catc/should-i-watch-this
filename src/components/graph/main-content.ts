@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { ChartValues, getColor } from './utils'
+import { ChartValues, getColor, getXY } from './utils'
 import { Season, Episode } from '../../utils/types'
 import {
 	D3Selection,
@@ -8,15 +8,7 @@ import {
 	ANIMATE_CONTENT_DURATION,
 	ANIMATE_AXIS_DURATION,
 } from './constants'
-
-function getXY(xScale: any, yScale: any, size: number) {
-	return {
-		getx: (episode: Episode) => {
-			return xScale(String(episode.Season)) + (episode.Episode - 1) * size
-		},
-		gety: (episode: Episode) => yScale(episode.imdbRating),
-	}
-}
+import { createTooltip } from './tooltip'
 
 function generateLine(getx: any, gety: any, episodes: Episode[]) {
 	return d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)(episodes as any)
@@ -35,14 +27,16 @@ function positionDots(selection: EpisodeSelectionType, getx: any, gety: any) {
 
 export function createMainContent(
 	container: D3Selection,
+	chartHeight: number,
 	yScale: d3.ScaleLinear<number, number>,
 ) {
 	const group = container.append('g').attr('id', 'main')
 	const linepath = group.append('path').attr('class', 'dot-line')
 	const xScale = d3.scaleOrdinal()
 
+	const tooltip = createTooltip(container, chartHeight)
+
 	async function animate(values: ChartValues, seasons: Season[], episodes: Episode[]) {
-		const t = container.transition().duration(750)
 		const { RANGES_NORMALIZED_NO_LAST, SIZE } = values
 
 		xScale
@@ -84,6 +78,8 @@ export function createMainContent(
 			.ease(d3.easeLinear)
 			.delay((_, i) => (ANIMATE_CONTENT_DURATION / totalepisodes) * (i + 2))
 			.style('opacity', 1)
+
+		tooltip.update(values, episodes, getx)
 	}
 
 	return {
@@ -91,6 +87,8 @@ export function createMainContent(
 			await animate(values, seasons, episodes)
 		},
 		async update(values: ChartValues, seasons: Season[], episodes: Episode[]) {
+			tooltip.disable()
+
 			const t = container.transition().duration(ANIMATE_AXIS_DURATION) // TODO - used on group now instead of svg - ensure it works
 
 			// hide line

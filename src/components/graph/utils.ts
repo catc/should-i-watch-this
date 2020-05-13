@@ -75,6 +75,16 @@ export const calcChartValues = (
 	}
 }
 
+export type GetXYReturn = ReturnType<typeof getXY>
+export function getXY(xScale: any, yScale: any, size: number) {
+	return {
+		getx: (episode: Episode): number => {
+			return xScale(String(episode.Season)) + (episode.Episode - 1) * size
+		},
+		gety: (episode: Episode): number => yScale(episode.imdbRating),
+	}
+}
+
 const COLORS = [
 	'#f44336',
 	'#9c27b0',

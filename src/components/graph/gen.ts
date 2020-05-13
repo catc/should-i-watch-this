@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import flatten from 'lodash/flatten'
 import flatMap from 'lodash/flatMap'
 import { Season, Episode } from '../../utils/types'
 import { getColor, calcChartValues } from './utils'
@@ -8,7 +7,6 @@ import { ANIMATE_AXIS_DURATION } from './constants'
 import { createMainContent } from './main-content'
 import { createYAxis } from './y-axis'
 import createPan from './pan'
-import { createTooltip } from './tooltip'
 
 window.d3 = d3 // FOR TESTING
 
@@ -53,7 +51,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: a
 	const xAxisLine = createXAxisLine(xaxis)
 	const xAxisText = createXAxisText(xaxis)
 	const xAxisTicks = createXAxisTicks(xaxis)
-	const mainContent = createMainContent(contentGroup, yScale)
+	const mainContent = createMainContent(contentGroup, CHART_HEIGHT, yScale)
 
 	/*
 		TODO - remove generate method, should be part of `create...` constructor/init
@@ -66,13 +64,6 @@ export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: a
 	mainContent.generate(VALUES, seasons, episodes)
 
 	const pan = createPan(svgContent, CHART_HEIGHT, VALUES)
-	const tooltip = createTooltip(
-		svgContent,
-		CHART_HEIGHT,
-		VALUES,
-		episodes,
-		// updateTooltip,
-	)
 
 	return {
 		async update(seasons: Season[]) {
@@ -92,7 +83,6 @@ export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: a
 			xAxisText.update(VALUES, CHART_HEIGHT, seasons, t)
 			xAxisTicks.update(VALUES, CHART_HEIGHT, t)
 			await mainContent.update(VALUES, seasons, episodes)
-			tooltip.update(VALUES, episodes)
 		},
 	}
 }
