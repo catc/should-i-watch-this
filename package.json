@@ -28,6 +28,7 @@
   ],
   "devDependencies": {
     "@types/d3": "^5.7.2",
+    "@types/jest": "^25.2.1",
     "@types/lodash": "^4.14.150",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
@@ -38,5 +39,6 @@
     "eslint-plugin-react-hooks": "^4.0.0",
     "prettier": "^2.0.5",
     "typescript": "^3.8.3"
-  }
+  },
+  "jest": {}
 }
