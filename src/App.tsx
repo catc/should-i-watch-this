@@ -1,13 +1,13 @@
 import React from 'react'
 import { Provider } from './hooks/useAppState'
 import SearchBar from './components/SearchBar'
-import Graph from './components/chart/wrapper'
+import ChartWrapper from './components/ChartWrapper'
 
 function App() {
 	return (
 		<Provider>
 			<SearchBar />
-			<Graph />
+			<ChartWrapper />
 		</Provider>
 	)
 }

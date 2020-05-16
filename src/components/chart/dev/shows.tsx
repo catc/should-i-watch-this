@@ -2,10 +2,6 @@ import React, { useEffect } from 'react'
 import useAppState from '../../../hooks/useAppState'
 import './style.scss'
 
-interface Props {
-	// ...
-}
-
 const SHOWS = [
 	{ id: 'tt0944947', name: 'game of thrones' },
 	{ id: 'tt1439629', name: 'community' },

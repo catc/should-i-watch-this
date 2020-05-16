@@ -7,7 +7,7 @@ import React, {
 	useEffect,
 } from 'react'
 import Cache, { Show } from '../utils/cache'
-import { getShowInfo, getAllSeasons, getSeasons } from '../utils/api'
+import { getShowInfo, getSeasons } from '../utils/api'
 
 type ContextType = {
 	selectShow: (id: string) => void
@@ -70,16 +70,6 @@ export function Provider({ children }: { children: React.ReactNode }) {
 			selectShow(params.get('id')!)
 		}
 	}, [selectShow])
-
-	/*
-		FOR TESTING
-	*/
-	useEffect(() => {
-		// select(cache.get('tt2467372')) // brooklynn
-		// select(cache.get('tt1439629')) // community
-		// select(cache.get('tt0944947')) // got
-		// select(cache.get('tt2085059')) // black mirror
-	}, [])
 
 	const state = {
 		selectShow,

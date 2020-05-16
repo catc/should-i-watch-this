@@ -1,10 +1,10 @@
-import React, { useRef, useLayoutEffect, useEffect, useState } from 'react'
-import useAppState from '../../hooks/useAppState'
-import { setupChart } from './gen'
-import { Episode } from '../../utils/types'
+import React, { useRef, useEffect, useState } from 'react'
+import useAppState from '../hooks/useAppState'
+import { setupChart } from './chart/gen'
+import { Episode } from '../utils/types'
 import { ReactComponent as CycleIcon } from '../icons/cycle.svg'
 
-import DevShows from './dev/shows' // FOR TESTING
+import DevShows from './chart/dev/shows' // FOR TESTING
 
 type ChartType = ReturnType<typeof setupChart>
 

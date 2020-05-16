@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ShowData, Season, Episode2, Episode } from './types'
+import { ShowData, Season, Episode } from './types'
 import groupBy from 'lodash/groupBy'
 
 const API_KEY = 'ddf710b6'
@@ -54,7 +54,7 @@ export const getShowInfo = async (id: string) => {
 	return null
 }
 
-// --------- series squeries
+// --------- series queries
 
 const query = (id: string) =>
 	`series.json?sql=select+tconst,+parentTconst,+seasonNumber,+episodeNumber,+seriesTitle,+episodeTitle,+rating,+votes+from+series+where+"parentTconst"+=+"${id}"+order+by+CAST(seasonNumber+as+INT),+CAST(episodeNumber+as+INT)`

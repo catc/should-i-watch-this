@@ -21,6 +21,7 @@
 			color: $b2;
 			padding: 0 2px;
 			border-bottom: 3px solid $red1;
+			font-weight: bold;
 
 			span {
 				color: $b4;
@@ -30,7 +31,7 @@
 	}
 
 	&__episode {
-		margin-top: 8px;
+		margin-top: 1em;
 		text-align: center;
 		height: 50px;
 		color: $b2;
@@ -46,7 +47,6 @@
 			margin-left: 8px;
 			font-weight: bold;
 			display: block;
-			margin-top: 2px;
 			font-size: 1.6rem;
 		}
 	}
