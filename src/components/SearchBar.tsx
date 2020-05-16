@@ -36,24 +36,32 @@ export default function SearchBar() {
 	}, [clear, debounced, term])
 
 	return (
-		<div className="search-container">
-			<div className="search">
-				<div className="search-bar__wrapper" onClick={() => ref.current?.click()}>
-					<input
-						ref={ref}
-						className="search-bar"
-						placeholder="Find shows"
-						value={term}
-						onChange={e => setTerm(e.target.value)}
-						type="text"
-						autoFocus
-					/>
-					<div className="search-bar__button">
-						<SearchIcon />
+		<>
+			<header>
+				<h1>Is it worth watching?</h1>
+			</header>
+			<div className="search-container">
+				<div className="search">
+					<div
+						className="search-bar__wrapper"
+						onClick={() => ref.current?.click()}
+					>
+						<input
+							ref={ref}
+							className="search-bar"
+							placeholder="Search shows"
+							value={term}
+							onChange={e => setTerm(e.target.value)}
+							type="text"
+							autoFocus
+						/>
+						<div className="search-bar__button">
+							<SearchIcon />
+						</div>
 					</div>
+					{results && <SearchResults results={results} clear={clear} />}
 				</div>
-				{results && <SearchResults results={results} clear={clear} />}
 			</div>
-		</div>
+		</>
 	)
 }

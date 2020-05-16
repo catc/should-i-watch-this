@@ -7,14 +7,13 @@ import { ANIMATE_AXIS_DURATION } from './constants'
 import { createMainContent } from './main-content'
 import { createYAxis } from './y-axis'
 import createPan from './pan'
+import { createTooltip } from './tooltip'
 
-window.d3 = d3 // FOR TESTING
+const getEpisodes = (seasons: Season[]) => flatMap(seasons, 'episodes')
 
-export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: any) {
-	const episodes = flatMap(seasons, season => {
-		season.Episodes.forEach(e => (e.Season = season.Season))
-		return season.Episodes
-	})
+export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip) {
+	console.log('SEASONS ARE', seasons)
+	const episodes = getEpisodes(seasons)
 
 	// TODO - add resize support
 	const { width: CHART_WIDTH, height: CHART_HEIGHT } = ref.getBoundingClientRect()
@@ -48,29 +47,35 @@ export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: a
 
 	// create chart elements
 	const { yScale } = createYAxis(svgYAxis, CHART_HEIGHT, CHART_WIDTH)
+	const xAxisTicks = createXAxisTicks(xaxis)
 	const xAxisLine = createXAxisLine(xaxis)
 	const xAxisText = createXAxisText(xaxis)
-	const xAxisTicks = createXAxisTicks(xaxis)
 	const mainContent = createMainContent(contentGroup, CHART_HEIGHT, yScale)
+	const tooltip = createTooltip(
+		contentGroup,
+		CHART_HEIGHT,
+		mainContent.xScale,
+		updateTooltip,
+	)
 
 	/*
 		TODO - remove generate method, should be part of `create...` constructor/init
 	*/
+
+	console.log(VALUES.DOT_SPACING)
 
 	// draw chart
 	xAxisLine.generate(VALUES)
 	xAxisText.generate(VALUES, seasons)
 	xAxisTicks.generate(VALUES, CHART_HEIGHT)
 	mainContent.generate(VALUES, seasons, episodes)
+	tooltip.update(VALUES, episodes)
 
 	const pan = createPan(svgContent, CHART_HEIGHT, VALUES)
 
 	return {
 		async update(seasons: Season[]) {
-			const episodes = flatMap(seasons, season => {
-				season.Episodes.forEach(e => (e.Season = season.Season))
-				return season.Episodes
-			})
+			const episodes = getEpisodes(seasons)
 
 			const VALUES = calcChartValues(CHART_WIDTH, seasons, episodes.length)
 
@@ -83,6 +88,7 @@ export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip: a
 			xAxisText.update(VALUES, CHART_HEIGHT, seasons, t)
 			xAxisTicks.update(VALUES, CHART_HEIGHT, t)
 			await mainContent.update(VALUES, seasons, episodes)
+			tooltip.update(VALUES, episodes)
 		},
 	}
 }

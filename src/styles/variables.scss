@@ -1,1 +1,28 @@
 $font-main: 'Open Sans', sans-serif;
+
+$b1: black;
+$b2: #333;
+$b3: #555;
+$b4: #777;
+
+$red1: #ff817e;
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(-360deg);
+	}
+}

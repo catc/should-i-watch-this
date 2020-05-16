@@ -1,0 +1,91 @@
+@import 'variables.scss';
+
+text {
+	font-family: $font-main;
+	fill: currentColor;
+}
+
+line {
+	shape-rendering: crispEdges;
+}
+
+
+
+/* ========================
+x-axis
+======================== */
+.x-axis-text {
+	transform: translateY(20px);
+	font-size: 1.2rem;
+	color: $b2;
+	text-anchor: middle;
+}
+
+
+.x-axis-line {
+	stroke-width: 1;
+	stroke: $b2;
+}
+
+.x-axis-season-line {
+	stroke: #efefef;
+	stroke-width: 1;
+}
+
+
+/* ========================
+y-axis
+======================== */
+.y-axis-text {
+	color: $b1;
+}
+
+.y-axis-line {
+	stroke: $b2;
+}
+
+.y-tick, .y-tick-8 {
+	stroke: rgba(black, 0.4);
+	stroke-dasharray: 3 5;
+	opacity: 0.25;
+}
+
+.y-tick-8 {
+	stroke: rgba(black, 0.7);
+	stroke-dasharray: 0;
+	stroke-width: 2;
+}
+
+// currently unused
+.y-axis-label {
+	color: $b1;
+}
+
+
+/* ========================
+content
+======================== */
+
+.dot-line {
+	fill: none;
+	stroke: lighten(black, 87%);
+	stroke-width: 1;
+}
+
+.dot {
+	stroke: #fff;
+	stroke-width: 3;
+}
+
+
+/* ========================
+pan
+======================== */
+#tooltip-overlay {
+	fill: transparent;
+}
+
+.fade-rect {
+	fill: transparent;
+	pointer-events: none;
+}

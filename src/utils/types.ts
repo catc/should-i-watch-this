@@ -11,17 +11,18 @@ export interface ShowData {
 }
 
 export interface Episode {
-	Episode: number
-	Released: string
-	Title: string
-	imdbID: string
-	imdbRating: number
-	Season: number // manually added
+	seriesID: string
+	episodeID: string
+	season: number
+	episode: number
+	seriesTitle: string
+	episodeTitle: string
+	rating: number
+	votes: number
 }
 
 export interface Season {
-	Title: string
-	Season: number
-	totalSeasons: number
-	Episodes: Episode[]
+	seriesTitle: string
+	season: number
+	episodes: Episode[]
 }

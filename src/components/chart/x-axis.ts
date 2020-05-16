@@ -20,11 +20,13 @@ function addXAxisText(
 	rangesNormalized: number[],
 	verticalLineAdjust: number,
 ) {
-	return selection
-		.attr('class', 'x-axis-text')
-		.text((season: Season) => `Season ${season.Season}`)
-		.attr('y', 18)
-		.attr('x', xAxisTextGetX(rangesNormalized, verticalLineAdjust))
+	return (
+		selection
+			.attr('class', 'x-axis-text')
+			.text((season: Season) => `Season ${season.season}`)
+			// .attr('y', 18)
+			.attr('x', xAxisTextGetX(rangesNormalized, verticalLineAdjust))
+	)
 }
 
 function addXAxisTicks(
@@ -33,7 +35,7 @@ function addXAxisTicks(
 	chartHeight: number,
 ) {
 	return selection
-		.attr('class', 'vertical-season-line')
+		.attr('class', 'x-axis-season-line')
 		.attr('y1', 0)
 		.attr('y2', -chartHeight)
 		.attr('x1', d => d - verticalLineAdjust)
@@ -43,11 +45,10 @@ function addXAxisTicks(
 export function createXAxisLine(xaxis: D3Selection) {
 	const xAxisLine = xaxis
 		.append('line')
-		.attr('class', 'x-axis')
+		.attr('class', 'x-axis-line')
 		.attr('y1', 0)
 		.attr('y2', 0)
 		.attr('x1', 0)
-	// .style('overflow', 'hidden') // TODO - remove?
 
 	return {
 		generate(values: ChartValues) {
@@ -67,7 +68,7 @@ export function createXAxisText(xaxis: D3Selection) {
 			const { RANGES_NORMALIZED, VERTICAL_LINE_ADJUST } = values
 			xaxis
 				.selectAll<any, Season>('text')
-				.data(seasons, (season: Season) => String(season.Season))
+				.data(seasons, (season: Season) => String(season.season))
 				.join('text')
 				.call(addXAxisText, RANGES_NORMALIZED, VERTICAL_LINE_ADJUST)
 		},
@@ -80,7 +81,7 @@ export function createXAxisText(xaxis: D3Selection) {
 			const { RANGES_NORMALIZED, VERTICAL_LINE_ADJUST } = values
 			xaxis
 				.selectAll<any, Season>('text')
-				.data(seasons, (season: Season) => String(season.Season))
+				.data(seasons, (season: Season) => String(season.season))
 				.join(
 					enter =>
 						enter

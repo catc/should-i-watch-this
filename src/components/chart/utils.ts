@@ -6,7 +6,7 @@ const generateRange = (seasons: Season[]) => {
 	return seasons.reduce(
 		(ranges, season, i) => {
 			// use last episode of season for full number of episodes in season
-			const size = season.Episodes[season.Episodes.length - 1].Episode
+			const size = season.episodes[season.episodes.length - 1].episode
 			const prev = ranges[i]
 			ranges.push(prev + size)
 			return ranges
@@ -79,9 +79,9 @@ export type GetXYReturn = ReturnType<typeof getXY>
 export function getXY(xScale: any, yScale: any, size: number) {
 	return {
 		getx: (episode: Episode): number => {
-			return xScale(String(episode.Season)) + (episode.Episode - 1) * size
+			return xScale(String(episode.season)) + (episode.episode - 1) * size
 		},
-		gety: (episode: Episode): number => yScale(episode.imdbRating),
+		gety: (episode: Episode): number => yScale(episode.rating),
 	}
 }
 

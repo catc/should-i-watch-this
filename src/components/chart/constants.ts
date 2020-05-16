@@ -9,7 +9,7 @@ export type SvgSelection = d3.Selection<SVGSVGElement, unknown, null, undefined>
 export type DivSelection = d3.Selection<HTMLDivElement, unknown, null, undefined>
 
 export const DOT_SIZE = 5
-export const MIN_SPACING = 15 // min spacing between dots
+export const MIN_SPACING = 10 // min spacing between dots
 export const PADDING = 20 // left and right padding of line
 
 export const ANIMATE_AXIS_DURATION = 750

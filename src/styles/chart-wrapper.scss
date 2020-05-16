@@ -1,0 +1,96 @@
+@import 'variables.scss';
+
+.chart {
+	&__container {
+		// display: grid;
+		// padding: 50px;
+		// grid-template-columns: auto 300px;
+		padding: 50px;
+	}
+
+	&__title {
+		padding: 1em 0 2em;
+		text-align: center;
+
+		h2 {
+			margin: 0;
+			// margin: 1em 0 2em;
+			font-size: 2rem;
+			font-weight: normal;
+			display: inline-block;
+			color: $b2;
+			padding: 0 2px;
+			border-bottom: 3px solid $red1;
+
+			span {
+				color: $b4;
+			}
+		}
+
+	}
+
+	&__episode {
+		margin-top: 8px;
+		text-align: center;
+		height: 50px;
+		color: $b2;
+
+		&-number {
+			font-weight: bold;
+			margin-right: 8px;
+			color: $b4;
+			// color: $b4;
+		}
+
+		&-rating {
+			margin-left: 8px;
+			font-weight: bold;
+			display: block;
+			margin-top: 2px;
+			font-size: 1.6rem;
+		}
+	}
+
+	&__wrapper {
+		display: flex;
+		height: 100%;
+		min-height: 500px;
+		width: 100%;
+		transition: 0.2s ease;
+		position: relative;
+
+		&.loading > svg {
+			opacity: 0.3;
+		}
+	}
+
+	&__loading {
+		position: absolute;
+		top: 250px;
+		left: 50%;
+		animation: fadeIn 0.9s ease-out;
+
+		svg {
+			$size: 24px;
+			width: $size;
+			height: $size;
+			fill: lighten(black, 25);
+			animation: spin 3s infinite linear;
+		}
+	}
+
+	&__side-panel {
+		border: 1px solid red;
+	}
+}
+
+#y-axis-svg {
+	overflow: visible;
+	vertical-align: top;
+}
+
+#content-svg {
+	vertical-align: top;
+	width: 100%;
+	cursor: grab;
+}

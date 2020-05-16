@@ -111,7 +111,7 @@ export default function createPan(svg: any, chartHeight: number, values: ChartVa
 			d3.event.preventDefault()
 		})
 
-		updateFade(0)
+		updateFade(0, true)
 
 		// used to determine how far left/right panning from initial start point
 		let pointerStart = 0
@@ -140,8 +140,8 @@ export default function createPan(svg: any, chartHeight: number, values: ChartVa
 			updateFade(x)
 		}
 
-		function updateFade(x: number) {
-			if (chartExtends) {
+		function updateFade(x: number, override?: boolean) {
+			if (chartExtends || override) {
 				const translatedX = Math.abs(x)
 				const showRight = translatedX + svgWidth + FADE_BUFFER < TOTAL_WIDTH
 				displayRightFade(showRight)

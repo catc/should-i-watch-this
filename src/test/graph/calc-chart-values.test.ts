@@ -1,9 +1,9 @@
-import { calcChartValues } from '../../components/graph/utils'
+import { calcChartValues } from '../../components/chart/utils'
 import flatMap from 'lodash/flatMap'
 import { Episode, Season } from '../../utils/types'
 
-jest.mock('../../components/graph/constants', () => {
-	const originalModule = jest.requireActual('../../components/graph/constants')
+jest.mock('../../components/chart/constants', () => {
+	const originalModule = jest.requireActual('../../components/chart/constants')
 	return {
 		...originalModule,
 		DOT_SIZE: 5,

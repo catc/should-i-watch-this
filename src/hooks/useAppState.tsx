@@ -7,16 +7,18 @@ import React, {
 	useEffect,
 } from 'react'
 import Cache, { Show } from '../utils/cache'
-import { getShowInfo, getAllSeasons } from '../utils/api'
+import { getShowInfo, getAllSeasons, getSeasons } from '../utils/api'
 
 type ContextType = {
 	selectShow: (id: string) => void
 	selectedShow: Show | null
+	isLoading: boolean
 }
 
 const AppStateContext = createContext<ContextType>({
 	selectShow: () => {},
 	selectedShow: null,
+	isLoading: false,
 })
 
 export function Provider({ children }: { children: React.ReactNode }) {
@@ -25,40 +27,64 @@ export function Provider({ children }: { children: React.ReactNode }) {
 	}, [])
 
 	const [selectedShow, select] = useState<Show | null>(null)
+	const [isLoading, setIsLoading] = useState(false)
+
+	const selectShow = useCallback(
+		async (id: string) => {
+			setIsLoading(true)
+			if (!cache.has(id)) {
+				const show = await getShowInfo(id)
+
+				if (show == null) {
+					return finish('failed to fetch show')
+				}
+
+				const seasons = await getSeasons(id)
+				if (seasons == null) {
+					return finish('failed to fetch seasons')
+				}
+
+				// cache
+				cache.set(show, seasons)
+			}
+
+			// update app
+			window.history.replaceState('', '', `?id=${id}`)
+			select(cache.get(id))
+			finish()
+
+			function finish(msg?: string) {
+				if (msg) {
+					alert(msg)
+				}
+				setIsLoading(false)
+			}
+		},
+		[cache],
+	)
+
+	// support query params
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search)
+		if (params.has('id')) {
+			selectShow(params.get('id')!)
+		}
+	}, [selectShow])
 
 	/*
 		FOR TESTING
 	*/
 	useEffect(() => {
-		select(cache.get('tt1439629')) // community
+		// select(cache.get('tt2467372')) // brooklynn
+		// select(cache.get('tt1439629')) // community
+		// select(cache.get('tt0944947')) // got
 		// select(cache.get('tt2085059')) // black mirror
 	}, [])
-
-	const selectShow = useCallback(
-		async (id: string) => {
-			if (!cache.has(id)) {
-				const show = await getShowInfo(id)
-
-				if (show == null) {
-					console.error('failed to fetch show')
-					return
-				}
-
-				const seasons = await getAllSeasons(show.imdbID, show.totalSeasons)
-				if (seasons == null) {
-					console.error('failed to fetch seasons')
-					return
-				}
-				cache.set(show, seasons)
-			}
-			select(cache.get(id))
-		},
-		[cache],
-	)
 
 	const state = {
 		selectShow,
 		selectedShow,
+		isLoading,
 	}
 
 	return <AppStateContext.Provider value={state}>{children}</AppStateContext.Provider>

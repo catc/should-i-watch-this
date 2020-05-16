@@ -1,4 +1,4 @@
-import { calcSpacing } from '../../components/graph/utils'
+import { calcSpacing } from '../../components/chart/utils'
 
 describe('calcSpacing', () => {
 	it('increases spacing if total items width less than chart width', () => {

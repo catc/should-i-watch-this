@@ -8,7 +8,6 @@ import {
 	ANIMATE_CONTENT_DURATION,
 	ANIMATE_AXIS_DURATION,
 } from './constants'
-import { createTooltip } from './tooltip'
 
 function generateLine(getx: any, gety: any, episodes: Episode[]) {
 	return d3.line().x(getx).y(gety).curve(d3.curveMonotoneX)(episodes as any)
@@ -18,7 +17,7 @@ function addDots(selection: EpisodeSelectionType) {
 	return selection
 		.attr('class', 'dot')
 		.attr('r', DOT_SIZE)
-		.attr('fill', (episode: Episode) => getColor(episode.Season))
+		.attr('fill', (episode: Episode) => getColor(episode.season))
 }
 
 function positionDots(selection: EpisodeSelectionType, getx: any, gety: any) {
@@ -34,13 +33,11 @@ export function createMainContent(
 	const linepath = group.append('path').attr('class', 'dot-line')
 	const xScale = d3.scaleOrdinal()
 
-	const tooltip = createTooltip(container, chartHeight)
-
 	async function animate(values: ChartValues, seasons: Season[], episodes: Episode[]) {
 		const { RANGES_NORMALIZED_NO_LAST, SIZE } = values
 
 		xScale
-			.domain(seasons.map(season => String(season.Season)))
+			.domain(seasons.map(season => String(season.season)))
 			.range(RANGES_NORMALIZED_NO_LAST)
 
 		const { getx, gety } = getXY(xScale, yScale, SIZE)
@@ -64,11 +61,11 @@ export function createMainContent(
 		const totalepisodes = episodes.length
 		group
 			.selectAll<any, Episode>('.dot')
-			.data(episodes, (episode: Episode) => String(episode.Episode))
+			.data(episodes, (episode: Episode) => String(episode.episode))
 			.join(
 				enter => enter.append('circle').call(addDots),
 				update =>
-					update.attr('fill', (episode: Episode) => getColor(episode.Season)),
+					update.attr('fill', (episode: Episode) => getColor(episode.season)),
 			)
 			.call(positionDots, getx, gety)
 			.style('opacity', 0)
@@ -78,8 +75,6 @@ export function createMainContent(
 			.ease(d3.easeLinear)
 			.delay((_, i) => (ANIMATE_CONTENT_DURATION / totalepisodes) * (i + 2))
 			.style('opacity', 1)
-
-		tooltip.update(values, episodes, getx)
 	}
 
 	return {
@@ -87,8 +82,6 @@ export function createMainContent(
 			await animate(values, seasons, episodes)
 		},
 		async update(values: ChartValues, seasons: Season[], episodes: Episode[]) {
-			tooltip.disable()
-
 			const t = container.transition().duration(ANIMATE_AXIS_DURATION) // TODO - used on group now instead of svg - ensure it works
 
 			// hide line
@@ -99,5 +92,6 @@ export function createMainContent(
 			await linecomplete
 			await animate(values, seasons, episodes)
 		},
+		xScale,
 	}
 }

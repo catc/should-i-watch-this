@@ -7,12 +7,23 @@ export function createYAxis(svg: any, chartHeight: number, svgContentWidth: numb
 	svg.call(d3.axisLeft(yScale).tickSizeOuter(0))
 		.selectAll('line')
 		.attr('x2', svgContentWidth)
-		.attr('class', (_, i: number) => (i === 8 ? 'y-tick-em' : 'y-tick'))
+		.attr('class', (_, i: number) => (i === 8 ? 'y-tick-8' : 'y-tick'))
 		.filter((_, i: number) => i === 0) // remove horizontal tick for 0
 		.remove()
 
+	svg.selectAll('text').attr('class', 'y-axis-text')
+
+	svg.select('.domain').attr('class', 'y-axis-line')
+	// svg.append('text')
+	// 	.attr('class', 'y-axis-label')
+	// 	.text('Rating')
+	// 	.attr('transform', 'rotate(-90)')
+	// 	.style('text-anchor', 'middle')
+	// 	.attr('y', 0)
+	// 	.attr('x', -chartHeight / 2)
+	// 	.attr('dy', -36)
+
 	return {
-		// create() {},
 		yScale,
 	}
 }

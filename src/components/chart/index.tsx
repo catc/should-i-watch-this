@@ -16,35 +16,37 @@ import { Episode } from '../../utils/types'
 export default function Graph() {
 	const { selectedShow } = useAppState()
 	const ref = useRef(null)
+	const ref2 = useRef(null)
 	const svg = useRef(null)
 	// const { cu/rrent: svg } = svgRef
 
 	const [tooltipData, setTooltipData] = useState(null)
 	// const [tooltipData, setTooltipData] = useState({ Season: 1, Episode: 5 })
 
-	const tooltip = useCallback((episode: Episode | null) => {
+	const updateTooltip = useCallback((episode: Episode | null) => {
+		// console.log(episode)
 		setTooltipData(episode)
 	}, [])
 
 	const setRef = useCallback(node => {
 		if (ref.current) {
-			// ON REMOVE
-			// observer.disconnect()
-			console.log('remove')
+			console.log('remove 1')
 		}
 
 		if (node) {
-			// ON ENTER
-			// select()
-			// console.log('added!')
-			// LEFT OFF HERE - bands arent calculated correctly, check with stuff here
-			// const s = setupChart(node, selectedShow?.seasons)
-			// const s = setupChart(node, mock1)
-			// console.log(s)
-			// svg.current = s
 		}
 
 		ref.current = node
+	}, [])
+	const setRef2 = useCallback(node => {
+		if (ref2.current) {
+			console.log('remove 2')
+		}
+
+		if (node) {
+		}
+
+		ref2.current = node
 	}, [])
 
 	// const svg = useMemo(() => {
@@ -69,8 +71,8 @@ export default function Graph() {
 	// }
 	useEffect(() => {
 		if (ref.current && selectedShow) {
-			// const s = setupChart(ref.current, mock1, tooltip)
-			const s = setupChart(ref.current, selectedShow.seasons, tooltip)
+			const s = setupChart(ref.current, mock1, updateTooltip)
+			setupChart(ref2.current, selectedShow.seasons, updateTooltip)
 			svg.current = s
 			console.log(selectedShow)
 		}
@@ -108,8 +110,8 @@ export default function Graph() {
 		<div>
 			<button onClick={() => select(mock1)}>One</button>
 			<button onClick={() => select(selectedShow.seasons)}>Two</button>
-			<div className="tooltip-wrapper" />
-			<br />
+			{/* <div className="tooltip-wrapper" /> */}
+			{/* <br /> */}
 			<div className="graph" ref={setRef}>
 				{tooltipData && (
 					<div className="tooltip">
@@ -119,6 +121,8 @@ export default function Graph() {
 					</div>
 				)}
 			</div>
+
+			<div className="graph" ref={setRef2} />
 		</div>
 	)
 }

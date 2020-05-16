@@ -1,0 +1,13 @@
+.dev_shows {
+	ul {
+		list-style: none;
+	}
+
+	li {
+		cursor: pointer;
+		display: inline-block;
+		margin-right: 1em;
+		padding: 1em;
+		border: 1px solid #ddd;
+	}
+}
