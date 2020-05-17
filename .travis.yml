@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+	- 10.16.0
+
+install:
+	- npm install
+
+script:
+	- npm run test
+
+jobs:
+  include:
+    - stage: github pages
+      script: PUBLIC_URL=./ npm run build
+      deploy:
+        provider: pages
+        github_token: $GH_PAGE_DEPLOY_TOKEN
+        local_dir: build
+        skip_cleanup: true
+        keep_history: true
+        committer_from_gh: true
+      if: branch = master
