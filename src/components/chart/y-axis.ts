@@ -11,9 +11,13 @@ export function createYAxis(svg: any, chartHeight: number, svgContentWidth: numb
 		.filter((_, i: number) => i === 0) // remove horizontal tick for 0
 		.remove()
 
+	// y axis text
 	svg.selectAll('text').attr('class', 'y-axis-text')
 
+	// y axis line
 	svg.select('.domain').attr('class', 'y-axis-line')
+
+	// label
 	// svg.append('text')
 	// 	.attr('class', 'y-axis-label')
 	// 	.text('Rating')

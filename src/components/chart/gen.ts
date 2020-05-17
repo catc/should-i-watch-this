@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import flatMap from 'lodash/flatMap'
 import { Season, Episode } from '../../utils/types'
-import { getColor, calcChartValues } from './utils'
+import { calcChartValues } from './utils'
 import { createXAxisTicks, createXAxisText, createXAxisLine } from './x-axis'
 import { ANIMATE_AXIS_DURATION } from './constants'
 import { createMainContent } from './main-content'

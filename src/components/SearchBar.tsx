@@ -1,39 +1,69 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
-import { searchShows, SearchResult } from '../utils/api'
 import SearchResults from './Results'
 import { ReactComponent as SearchIcon } from './icons/magnifying-glass.svg'
-import debounce from 'lodash/debounce'
+import useSearch from './hooks/useSearch'
+import useAppState from '../hooks/useAppState'
+
+enum KEY_CODES {
+	UP = 38,
+	DOWN = 40,
+	ENTER = 13,
+	ESC = 27,
+}
 
 export default function SearchBar() {
 	const ref = useRef<HTMLInputElement>(null)
-	const [term, setTerm] = useState('')
-	const [results, setResults] = useState<SearchResult[] | null>(null)
+	const { selectShow } = useAppState()
+	const { bind, setTerm, results } = useSearch()
 
-	// clear results
-	const clear = useCallback((resetTerm?: boolean) => {
-		setResults(null)
-		if (resetTerm) setTerm('')
-	}, [])
+	const [highlighted, setHighlighted] = useState(-1)
+	const [displayResults, setDisplayResults] = useState(false)
 
-	const search = useCallback(
-		async (term: string) => {
-			clear()
-			const results = await searchShows(term)
-			setResults(results)
+	// if results change, display and reset highlighted
+	useEffect(() => {
+		setHighlighted(-1)
+		setDisplayResults(true)
+	}, [results])
+
+	const onFocus = useCallback(() => {
+		if (results) setDisplayResults(true)
+	}, [results])
+	// need to set timeout so blur doesn't trigger before results click
+	const onBlur = useCallback(e => setTimeout(() => setDisplayResults(false), 200), [])
+
+	const select = useCallback(
+		(index: number) => {
+			if (results && results[index]) {
+				selectShow(results[index].imdbID)
+				setTerm('')
+			}
 		},
-		[clear],
+		[results, selectShow, setTerm],
 	)
 
-	const debounced = useMemo(() => debounce(search, 700), [search])
-
 	useEffect(() => {
-		if (term && term.length >= 2) {
-			debounced(term)
-			return () => debounced.cancel()
-		} else {
-			clear()
+		const handler = (e: KeyboardEvent) => {
+			switch (e.keyCode) {
+				case KEY_CODES.ESC:
+					setDisplayResults(false)
+					break
+				case KEY_CODES.UP:
+					results && setHighlighted(ind => Math.max(ind - 1, 0))
+					break
+				case KEY_CODES.DOWN:
+					if (results) {
+						setDisplayResults(true)
+						setHighlighted(ind => Math.min(ind + 1, results.length - 1))
+					}
+					break
+				case KEY_CODES.ENTER:
+					select(highlighted)
+					break
+			}
 		}
-	}, [clear, debounced, term])
+		document.addEventListener('keydown', handler, false)
+		return () => document.removeEventListener('keydown', handler, false)
+	}, [highlighted, results, select, selectShow])
 
 	return (
 		<>
@@ -47,19 +77,27 @@ export default function SearchBar() {
 						onClick={() => ref.current?.click()}
 					>
 						<input
+							{...bind}
 							ref={ref}
 							className="search-bar"
 							placeholder="Search shows"
-							value={term}
-							onChange={e => setTerm(e.target.value)}
 							type="text"
 							autoFocus
+							onFocus={onFocus}
+							onBlur={onBlur}
 						/>
 						<div className="search-bar__button">
 							<SearchIcon />
 						</div>
 					</div>
-					{results && <SearchResults results={results} clear={clear} />}
+
+					{displayResults && (
+						<SearchResults
+							results={results}
+							highlighted={highlighted}
+							select={select}
+						/>
+					)}
 				</div>
 			</div>
 		</>

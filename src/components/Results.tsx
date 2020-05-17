@@ -1,61 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { SearchResult } from '../utils/api'
-import useAppState from '../hooks/useAppState'
 
 interface Props {
-	results: SearchResult[]
-	clear: (resetTerm?: boolean) => void
-}
-
-enum KEY_CODES {
-	UP = 38,
-	DOWN = 40,
-	ENTER = 13,
-	ESC = 27,
+	results: SearchResult[] | null
+	highlighted: number
+	select: (i: number) => void
 }
 
 const hasPoster = (url: string) => url.toLowerCase() !== 'n/a'
 
-export default function SearchResults({ results, clear }: Props) {
-	const { selectShow } = useAppState()
-	const [focused, setFocus] = useState(-1)
-	const focusedRef = useRef<HTMLLIElement>(null)
+export default function SearchResults({ results, highlighted, select }: Props) {
+	const highlightedRef = useRef<HTMLLIElement>(null)
 
 	useEffect(() => {
-		if (results && results.length) {
-			/*
-				annoyingly adds the handler each time focused is changed,
-				could also add focused to useRef and read from that to avoid
-			 */
-			const handler = (e: KeyboardEvent) => {
-				switch (e.keyCode) {
-					case KEY_CODES.ESC:
-						clear()
-						break
-					case KEY_CODES.UP:
-						setFocus(ind => Math.max(ind - 1, 0))
-						focusedRef.current?.scrollIntoView(false)
-						break
-					case KEY_CODES.DOWN:
-						setFocus(ind => Math.min(ind + 1, results.length - 1))
-						focusedRef.current?.scrollIntoView(false)
-						break
-					case KEY_CODES.ENTER:
-						clear(true)
-						if (focused !== -1) selectShow(results[focused].imdbID)
-						break
-				}
-			}
-			document.addEventListener('keydown', handler, false)
-			return () => document.removeEventListener('keydown', handler, false)
-		} else {
-			setFocus(-1)
-		}
-	}, [clear, focused, results, selectShow])
+		highlightedRef.current?.scrollIntoView(false)
+	}, [highlighted])
 
-	function select(id: string) {
-		selectShow(id)
-		clear()
+	if (!results) {
+		return null
 	}
 
 	if (!results.length) {
@@ -68,10 +30,10 @@ export default function SearchResults({ results, clear }: Props) {
 		<ul className="search-results">
 			{results.map((r, i) => (
 				<li
-					className={`search-result ${i === focused ? 'focused' : ''}`}
+					className={`search-result ${i === highlighted ? 'higlighted' : ''}`}
 					key={r.imdbID}
-					onClick={() => select(r.imdbID)}
-					ref={i === focused ? focusedRef : null}
+					onClick={() => select(i)}
+					ref={i === highlighted ? highlightedRef : null}
 				>
 					<div className="search-result__poster">
 						{hasPoster(r.Poster) ? <img src={r.Poster} alt="poster" /> : null}

@@ -14,6 +14,5 @@ export const PADDING = 20 // left and right padding of line
 
 export const ANIMATE_AXIS_DURATION = 750
 export const ANIMATE_CONTENT_DURATION = 1200
-// export const ANIMATE_CONTENT_DURATION = 180
 
 export const CONTENT_ID = '#content'
