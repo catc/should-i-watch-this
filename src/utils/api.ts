@@ -5,7 +5,7 @@ import groupBy from 'lodash/groupBy'
 const API_KEY = 'ddf710b6'
 
 const omdb = axios.create({
-	baseURL: 'http://www.omdbapi.com/',
+	baseURL: 'https://www.omdbapi.com/',
 })
 
 // until new version is released - https://github.com/axios/axios/issues/2190
