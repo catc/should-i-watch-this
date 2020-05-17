@@ -4,6 +4,8 @@ import { Episode } from '../../utils/types'
 import { SvgSelection, PADDING, DivSelection, D3Selection } from './constants'
 import { bisector } from 'd3'
 
+export type UpdateTooltipFn = (e: Episode | null) => void
+
 function _createTooltip(content: D3Selection) {
 	const tooltip = content.append('g').attr('class', 'tooltip')
 
@@ -87,7 +89,7 @@ export function createTooltip(
 	content: D3Selection,
 	chartHeight: number,
 	xScale: any,
-	updateTooltip: any,
+	updateTooltip: UpdateTooltipFn,
 ) {
 	const overlay = content
 		.append('rect')
@@ -125,7 +127,8 @@ export function createTooltip(
 				const episode = episodes[i] || null
 
 				// update
-				updateTooltip(episode, episode ? getx(episode) : 0)
+				updateTooltip(episode)
+				// updateTooltip(episode, episode ? getx(episode) : 0)
 				// line.update(episode ? getx(episode) : undefined)
 			})
 			.on('mouseout', () => {

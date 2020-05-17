@@ -116,7 +116,7 @@ export default function createPan(svg: any, chartHeight: number, values: ChartVa
 		// used to determine how far left/right panning from initial start point
 		let pointerStart = 0
 		function dragstarted() {
-			svg.attr('cursor', 'grabbing')
+			svg.style('cursor', 'grabbing')
 			d3.select(this).raise()
 
 			pointerStart = d3.event.x
@@ -130,7 +130,7 @@ export default function createPan(svg: any, chartHeight: number, values: ChartVa
 		}
 
 		function dragended() {
-			svg.attr('cursor', '')
+			svg.style('cursor', '')
 		}
 
 		function zoomed() {

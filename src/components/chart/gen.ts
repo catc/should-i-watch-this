@@ -7,12 +7,15 @@ import { ANIMATE_AXIS_DURATION } from './constants'
 import { createMainContent } from './main-content'
 import { createYAxis } from './y-axis'
 import createPan from './pan'
-import { createTooltip } from './tooltip'
+import { createTooltip, UpdateTooltipFn } from './tooltip'
 
 const getEpisodes = (seasons: Season[]) => flatMap(seasons, 'episodes')
 
-export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip) {
-	console.log('SEASONS ARE', seasons)
+export function setupChart(
+	ref: HTMLElement,
+	seasons: Season[],
+	updateTooltip: UpdateTooltipFn,
+) {
 	const episodes = getEpisodes(seasons)
 
 	// TODO - add resize support
@@ -61,8 +64,6 @@ export function setupChart(ref: HTMLElement, seasons: Season[], updateTooltip) {
 	/*
 		TODO - remove generate method, should be part of `create...` constructor/init
 	*/
-
-	console.log(VALUES.DOT_SPACING)
 
 	// draw chart
 	xAxisLine.generate(VALUES)

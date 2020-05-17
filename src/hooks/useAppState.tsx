@@ -9,6 +9,8 @@ import React, {
 import Cache, { Show } from '../utils/cache'
 import { getShowInfo, getSeasons } from '../utils/api'
 
+import mock from '../components/chart/dev/mock/gen' // FOR TESTING
+
 type ContextType = {
 	selectShow: (id: string) => void
 	selectedShow: Show | null
@@ -70,6 +72,17 @@ export function Provider({ children }: { children: React.ReactNode }) {
 			selectShow(params.get('id')!)
 		}
 	}, [selectShow])
+
+	/*
+		FOR TESTING
+	*/
+	useEffect(() => {
+		// select(mock(10))
+		// select(cache.get('tt2467372')) // brooklynn
+		// select(cache.get('tt1439629')) // community
+		// select(cache.get('tt0944947')) // got
+		// select(cache.get('tt2085059')) // black mirror
+	}, [])
 
 	const state = {
 		selectShow,

@@ -86,13 +86,14 @@ export function getXY(xScale: any, yScale: any, size: number) {
 }
 
 const COLORS = [
-	'#f44336',
 	'#9c27b0',
+	'#3f51b5',
+	'#2196f3',
 	'#009688',
 	'#8bc34a',
-	'#2196f3',
 	'#ffc107',
 	'#fb8c00',
+	'#f33d38',
 	// '#2c7bb6',
 	// '#00a6ca',
 	// '#00ccbc',

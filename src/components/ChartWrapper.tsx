@@ -22,6 +22,7 @@ export default function GraphWrapper() {
 
 	function createChart(node: HTMLDivElement) {
 		if (node && !chart.current) {
+			console.log(selectedShow)
 			chart.current = setupChart(node, selectedShow!.seasons, updateTooltip)
 		}
 		chartRef.current = node
@@ -70,6 +71,7 @@ export default function GraphWrapper() {
 				)}
 			</div>
 
+			{/* for testing */}
 			<DevShows />
 		</div>
 	)

@@ -64,8 +64,7 @@ export function createMainContent(
 			.data(episodes, (episode: Episode) => String(episode.episode))
 			.join(
 				enter => enter.append('circle').call(addDots),
-				update =>
-					update.attr('fill', (episode: Episode) => getColor(episode.season)),
+				update => update.call(addDots),
 			)
 			.call(positionDots, getx, gety)
 			.style('opacity', 0)
