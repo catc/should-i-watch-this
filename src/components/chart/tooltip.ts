@@ -73,7 +73,7 @@ export function createTooltip(
 				// line.update(episode ? getx(episode) : undefined)
 			})
 			.on('mouseout', () => {
-				// updateTooltip(null)
+				updateTooltip(null)
 			})
 	}
 

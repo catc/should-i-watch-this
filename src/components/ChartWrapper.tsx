@@ -3,6 +3,7 @@ import useAppState from '../hooks/useAppState'
 import { setupChart } from './chart/gen'
 import { Episode } from '../utils/types'
 import { ReactComponent as CycleIcon } from './icons/cycle.svg'
+import InfoPanel from './InfoPanel'
 
 import DevShows from './chart/dev/shows' // FOR TESTING
 
@@ -15,7 +16,7 @@ const formatEpisodeNumber = (season: number, episode: number) => {
 }
 
 export default function GraphWrapper() {
-	const { selectedShow, selectShow, isLoading } = useAppState()
+	const { selectedShow, isLoading } = useAppState()
 	const chartRef = useRef<HTMLDivElement | null>(null)
 	const chart = useRef<ChartType>(null)
 	const [tooltip, updateTooltip] = useState<Episode | null>(null)
@@ -40,6 +41,7 @@ export default function GraphWrapper() {
 
 	return (
 		<div className="chart__container">
+			{/* title + tooltip */}
 			<div className="chart__title">
 				<h2>
 					{selectedShow.info.Title} <span>({selectedShow.info.Year})</span>
@@ -60,6 +62,8 @@ export default function GraphWrapper() {
 					)}
 				</div>
 			</div>
+
+			{/* chart */}
 			<div
 				className={`chart__wrapper ${isLoading ? 'loading' : ''}`}
 				ref={createChart}
@@ -71,8 +75,11 @@ export default function GraphWrapper() {
 				)}
 			</div>
 
+			{/* info panel */}
+			<InfoPanel />
+
 			{/* for testing */}
-			<DevShows />
+			{/* <DevShows /> */}
 		</div>
 	)
 }

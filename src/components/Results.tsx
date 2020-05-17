@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { SearchResult } from '../utils/api'
+import { hasPoster } from './utils/poster'
 
 interface Props {
 	results: SearchResult[] | null
 	highlighted: number
 	select: (i: number) => void
 }
-
-const hasPoster = (url: string) => url.toLowerCase() !== 'n/a'
 
 export default function SearchResults({ results, highlighted, select }: Props) {
 	const highlightedRef = useRef<HTMLLIElement>(null)

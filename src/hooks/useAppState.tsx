@@ -73,16 +73,8 @@ export function Provider({ children }: { children: React.ReactNode }) {
 		}
 	}, [selectShow])
 
-	/*
-		FOR TESTING
-	*/
-	useEffect(() => {
-		// select(mock(10))
-		// select(cache.get('tt2467372')) // brooklynn
-		// select(cache.get('tt1439629')) // community
-		// select(cache.get('tt0944947')) // got
-		// select(cache.get('tt2085059')) // black mirror
-	}, [])
+	// FOR TESTING
+	// useEffect(() => select(mock(10)), [])
 
 	const state = {
 		selectShow,
