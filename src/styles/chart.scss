@@ -77,6 +77,11 @@ content
 	stroke-width: 3;
 }
 
+.trendline {
+	stroke: $b2;
+	stroke-width: 1;
+	shape-rendering: auto;
+}
 
 /* ========================
 pan

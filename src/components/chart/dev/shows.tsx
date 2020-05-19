@@ -7,6 +7,8 @@ const SHOWS = [
 	{ id: 'tt1439629', name: 'community' },
 	{ id: 'tt2467372', name: 'brooklyn 99' },
 	{ id: 'tt2085059', name: 'black mirror' },
+	{ id: 'tt5363918', name: 'disenchantment' },
+	{ id: 'tt0773262', name: 'dexter' },
 ]
 
 export default function DEV_Shows() {

@@ -12,7 +12,8 @@
     "node-sass": "^4.14.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "simple-statistics": "^7.1.0"
   },
   "scripts": {
     "start": "TSC_COMPILE_ON_ERROR=true react-scripts start",

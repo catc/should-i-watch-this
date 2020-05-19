@@ -9,7 +9,7 @@ import { createYAxis } from './y-axis'
 import createPan from './pan'
 import { createTooltip, UpdateTooltipFn } from './tooltip'
 
-const getEpisodes = (seasons: Season[]) => flatMap(seasons, 'episodes')
+export const getEpisodes = (seasons: Season[]) => flatMap(seasons, 'episodes')
 
 export function setupChart(
 	ref: HTMLElement,
@@ -53,7 +53,7 @@ export function setupChart(
 	const xAxisTicks = createXAxisTicks(xaxis)
 	const xAxisLine = createXAxisLine(xaxis)
 	const xAxisText = createXAxisText(xaxis)
-	const mainContent = createMainContent(contentGroup, CHART_HEIGHT, yScale)
+	const mainContent = createMainContent(contentGroup, yScale)
 	const tooltip = createTooltip(
 		contentGroup,
 		CHART_HEIGHT,
@@ -91,5 +91,7 @@ export function setupChart(
 			await mainContent.update(VALUES, seasons, episodes)
 			tooltip.update(VALUES, episodes)
 		},
+
+		toggleTrendline: mainContent.toggleTrendLine,
 	}
 }

@@ -1,3 +1,7 @@
+.panel {
+	display: flex;
+}
+
 .info-panel {
 	margin-top: 1em;
 	display: flex;
@@ -65,7 +69,6 @@
 		margin-bottom: 8px;
 		padding-right: 1em;
 		max-width: 500px;
-		// font-size: 1.5rem;
 	}
 
 	&__seasons {
@@ -74,4 +77,56 @@
 		// text-transform: uppercase;
 		// font-weight: bold;
 	}
+}
+
+
+.analysis {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 2em;
+	border-left: 1px solid #ddd;
+	padding-left: 2em;
+	max-width: 420px;
+	padding-top: 8px;
+
+	&__toggle {
+		margin-top: 10px;
+		cursor: pointer;
+		vertical-align: middle;
+		position: relative;
+		padding-left: 28px;
+
+		&-label {
+			font-size: 1.2rem;
+			text-transform: uppercase;
+			font-weight: bold;
+		}
+	}
+
+	&__input {
+		display: inline-block;
+		$size: 18px;
+		width: $size;
+		height: $size;
+		border: 2px solid $b2;
+		border-radius: 2px;
+		left: 0;
+		position: absolute;
+
+		&.active {
+			background: $red1;
+		}
+	}
+}
+
+.analysis__info {
+	margin-bottom: 2em;
+	display: flex;
+
+	&-icon {
+		font-size: 3rem;
+		display: inline-block;
+		margin-right: 0.5em;
+	}
+
 }

@@ -6,6 +6,7 @@ import { ReactComponent as CycleIcon } from './icons/cycle.svg'
 import InfoPanel from './InfoPanel'
 
 import DevShows from './chart/dev/shows' // FOR TESTING
+import { ToggleTrendlineFn } from './Analysis'
 
 type ChartType = ReturnType<typeof setupChart>
 
@@ -75,11 +76,14 @@ export default function GraphWrapper() {
 				)}
 			</div>
 
-			{/* info panel */}
-			<InfoPanel />
-
 			{/* for testing */}
 			{/* <DevShows /> */}
+
+			{/* info panel */}
+			<InfoPanel
+				show={selectedShow}
+				toggleTrendline={chart.current?.toggleTrendline as ToggleTrendlineFn}
+			/>
 		</div>
 	)
 }
