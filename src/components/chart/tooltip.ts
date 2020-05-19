@@ -1,28 +1,22 @@
 import * as d3 from 'd3'
 import { ChartValues, getXY } from './utils'
 import { Episode } from '../../utils/types'
-import { SvgSelection, PADDING, DivSelection, D3Selection } from './constants'
-import { bisector } from 'd3'
+import { D3Selection } from './constants'
 
 export type UpdateTooltipFn = (e: Episode | null) => void
 
-function createLine(content: D3Selection) {
-	const line = content
-		.append('line')
-		.attr('y1', 0)
-		.attr('y2', 500)
-		.attr('x1', 0)
-		.attr('x2', 0)
-		.attr('stroke', '#ddd')
+function createUpdateBisectorLine(
+	line: d3.Selection<SVGLineElement, unknown, null, undefined>,
+	chartHeight: number,
+) {
+	line.attr('y1', 0).attr('y1', chartHeight).style('opacity', 0)
 
-	return {
-		update(x?: number) {
-			if (x) {
-				line.attr('x1', x).attr('x2', x).style('opacity', 1)
-			} else {
-				line.style('opacity', 0)
-			}
-		},
+	return function update(x: number | null) {
+		if (x) {
+			line.attr('x1', x).attr('x2', x).style('opacity', 1)
+		} else {
+			line.style('opacity', 0)
+		}
 	}
 }
 
@@ -31,6 +25,7 @@ export function createTooltip(
 	chartHeight: number,
 	xScale: any,
 	updateTooltip: UpdateTooltipFn,
+	bisectorLine: d3.Selection<SVGLineElement, unknown, null, undefined>,
 ) {
 	const overlay = content
 		.append('rect')
@@ -39,11 +34,12 @@ export function createTooltip(
 		.attr('y', 0)
 		.attr('height', chartHeight)
 
-	// const line = createLine(content)
-	// const tooltip = _createTooltip(content)
+	const updateBisectorLine = createUpdateBisectorLine(bisectorLine, chartHeight)
+
+	let showBisector = false
 
 	function update(values: ChartValues, episodes: Episode[]) {
-		const { TOTAL_WIDTH, RANGES_NORMALIZED, SIZE, VERTICAL_LINE_ADJUST } = values
+		const { TOTAL_WIDTH, VERTICAL_LINE_ADJUST } = values
 		const { getx } = getXY(xScale, null, values.SIZE)
 
 		// update width
@@ -69,11 +65,13 @@ export function createTooltip(
 
 				// update
 				updateTooltip(episode)
-				// updateTooltip(episode, episode ? getx(episode) : 0)
-				// line.update(episode ? getx(episode) : undefined)
+				showBisector && episode
+					? updateBisectorLine(getx(episode))
+					: updateBisectorLine(null)
 			})
 			.on('mouseout', () => {
 				updateTooltip(null)
+				updateBisectorLine(null)
 			})
 	}
 
@@ -83,5 +81,11 @@ export function createTooltip(
 			overlay.on('mousemove', null).on('mouseout', null)
 		},
 		update,
+
+		toggleBisectorLine() {
+			showBisector = !showBisector
+			updateBisectorLine(null)
+			return showBisector
+		},
 	}
 }

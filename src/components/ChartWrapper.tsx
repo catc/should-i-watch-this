@@ -19,22 +19,22 @@ const formatEpisodeNumber = (season: number, episode: number) => {
 export default function GraphWrapper() {
 	const { selectedShow, isLoading } = useAppState()
 	const chartRef = useRef<HTMLDivElement | null>(null)
-	const chart = useRef<ChartType>(null)
+	const [chart, setChart] = useState<ChartType | null>(null)
 	const [tooltip, updateTooltip] = useState<Episode | null>(null)
 
 	function createChart(node: HTMLDivElement) {
-		if (node && !chart.current) {
+		if (node && !chart) {
 			console.log(selectedShow)
-			chart.current = setupChart(node, selectedShow!.seasons, updateTooltip)
+			setChart(setupChart(node, selectedShow!.seasons, updateTooltip))
 		}
 		chartRef.current = node
 	}
 
 	useEffect(() => {
-		if (selectedShow && chart.current) {
-			chart.current.update(selectedShow.seasons)
+		if (selectedShow && chart) {
+			chart.update(selectedShow.seasons)
 		}
-	}, [selectedShow])
+	}, [chart, selectedShow])
 
 	if (!selectedShow) {
 		return null
@@ -82,7 +82,8 @@ export default function GraphWrapper() {
 			{/* info panel */}
 			<InfoPanel
 				show={selectedShow}
-				toggleTrendline={chart.current?.toggleTrendline as ToggleTrendlineFn}
+				toggleTrendline={chart?.toggleTrendline as ToggleTrendlineFn}
+				toggleBisectorLine={chart?.toggleBisectorLine as () => boolean}
 			/>
 		</div>
 	)

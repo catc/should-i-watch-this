@@ -59,6 +59,7 @@ export function setupChart(
 		CHART_HEIGHT,
 		mainContent.xScale,
 		updateTooltip,
+		mainContent.bisectorLine,
 	)
 
 	/*
@@ -93,5 +94,6 @@ export function setupChart(
 		},
 
 		toggleTrendline: mainContent.toggleTrendLine,
+		toggleBisectorLine: tooltip.toggleBisectorLine,
 	}
 }

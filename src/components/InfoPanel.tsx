@@ -12,9 +12,10 @@ const link = (id: string) => ({
 type Props = {
 	toggleTrendline: ToggleTrendlineFn
 	show: Show
+	toggleBisectorLine: () => boolean
 }
 
-function InfoPanel({ toggleTrendline, show }: Props) {
+function InfoPanel({ toggleTrendline, show, toggleBisectorLine }: Props) {
 	const { info, seasons } = show
 
 	return (
@@ -43,7 +44,11 @@ function InfoPanel({ toggleTrendline, show }: Props) {
 				</div>
 			</div>
 
-			<Analysis show={show} toggleTrendline={toggleTrendline} />
+			<Analysis
+				show={show}
+				toggleTrendline={toggleTrendline}
+				toggleBisectorLine={toggleBisectorLine}
+			/>
 		</div>
 	)
 }

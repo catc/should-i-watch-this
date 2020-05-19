@@ -51,6 +51,7 @@ export function createMainContent(
 	yScale: d3.ScaleLinear<number, number>,
 ) {
 	const group = container.append('g').attr('id', 'main-content')
+	const bisectorLine = group.append('line').attr('class', 'bisector-line')
 	const content = group.append('g')
 	const linepath = content.append('path').attr('class', 'dot-line')
 	const xScale = d3.scaleOrdinal()
@@ -158,5 +159,6 @@ export function createMainContent(
 
 			return { display: displayTrendline, trend }
 		},
+		bisectorLine,
 	}
 }

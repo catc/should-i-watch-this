@@ -75,24 +75,32 @@ function Info({ show }: { show: Show }) {
 interface Props {
 	show: Show
 	toggleTrendline: ToggleTrendlineFn
+	toggleBisectorLine: () => boolean
 }
 
 export default function Analysis({
 	show,
 	toggleTrendline: toggleTrendlineOriginal,
+	toggleBisectorLine: toggleBisectorLineOriginal,
 }: Props) {
 	const [trendline, setTrendline] = useState<TrendlineData>({} as TrendlineData)
+	const [showBisector, setShowBisector] = useState(false)
 
 	const toggleTrendline = useCallback(() => {
 		if (!toggleTrendlineOriginal) return
 		setTrendline(toggleTrendlineOriginal())
 	}, [toggleTrendlineOriginal])
 
+	const toggleBisectorLine = useCallback(() => {
+		if (!toggleBisectorLineOriginal) return
+		setShowBisector(toggleBisectorLineOriginal())
+	}, [toggleBisectorLineOriginal])
+
 	return (
-		<div className="analysis" onClick={toggleTrendline}>
+		<div className="analysis">
 			<Info show={show} />
 
-			<div className={`analysis__toggle `}>
+			<div className={`analysis__toggle `} onClick={toggleTrendline}>
 				<div className={`analysis__input ${trendline.display ? 'active' : ''}`} />
 				<div className="analysis__toggle-label">Toggle trendline</div>
 				{trendline.display && (
@@ -102,8 +110,8 @@ export default function Analysis({
 				)}
 			</div>
 
-			<div className={`analysis__toggle `}>
-				<div className={`analysis__input ${false ? 'active' : ''}`} />
+			<div className={`analysis__toggle `} onClick={toggleBisectorLine}>
+				<div className={`analysis__input ${showBisector ? 'active' : ''}`} />
 				<div className="analysis__toggle-label">Toggle bisector on hover</div>
 			</div>
 		</div>
